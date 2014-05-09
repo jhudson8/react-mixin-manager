@@ -15,22 +15,22 @@ Usage
 ------------
 Mixins can be registered and named for ease of use
 ```
-React.mixins.add('myMixin', myMixin);
+React.mixins.add('myMixin', myMixinImpl);
 ...
 React.createClass({
   mixins: React.mixins.get('myMixin', anyOtherPlainOldMixin)
 })
-// myMixin, anyOtherPlainOldMixin will be included
+// myMixinImpl, anyOtherPlainOldMixin will be included
 ```
 
 Registered mixins can reference dependencies
 ```
-React.mixins.add('mixin1', mixin1);
-// 'mixin1' will be included automatically whenever 'mixin2' is referenced
-React.mixins.add('mixin2', mixin1, 'mixin1');
+React.mixins.add('mixin1', mixin1Impl);
+// mixin1Impl will be included automatically whenever 'mixin2' is referenced
+React.mixins.add('mixin2', mixin2Impl, 'mixin1');
 ...
 React.createClass({
   mixins: React.mixins.get('mixin2', anyOtherPlainOldMixin)
 })
-// mixin1, mixin2, anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times)
+// mixin1Impl, mixin2Impl, anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times)
 ```
