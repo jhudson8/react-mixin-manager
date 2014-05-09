@@ -1,0 +1,4 @@
+// AMD impl for react-mixin-dependencies
+define(['react'], function(react) {
+  ({core})(react);
+});

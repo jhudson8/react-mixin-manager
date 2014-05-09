@@ -1,0 +1,2 @@
+// commonjs impl for react-mixin-dependencies
+module.exports = {core};

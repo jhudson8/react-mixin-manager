@@ -1,0 +1,2 @@
+// browser impl for react-mixin-dependencies
+({core})(React);
