@@ -34,3 +34,5 @@ React.createClass({
 })
 // mixin1Impl, mixin2Impl, anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times)
 ```
+
+see [more examples](https://github.com/jhudson8/react-mixin-dependencies/blob/master/test/test.js#L17)
