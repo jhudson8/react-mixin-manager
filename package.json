@@ -17,7 +17,8 @@
   "analyze": false,
   "devDependencies": {
     "chai": "*",
-    "mocha": "*"
+    "mocha": "*",
+    "uglify-js": "*"
   },
   "license": "MIT"
 }

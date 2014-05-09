@@ -7,9 +7,8 @@ This allows for more granular mixins and less DRY mixin code.
 
 Installation
 ------------
-* Browser: include *react-mixin-dependencies.js* after [React](http://facebook.github.io/react/)
+* Browser: include *react-mixin-dependencies.js/react-mixin-dependencies.min.js* after [React](http://facebook.github.io/react/)
 * CommonJS: ```require('react-mixin-dependencies')(require('react'));```
-* AMD: add *react-mixin-dependencies-amd.js*
 
 Usage
 ------------
