@@ -1,11 +1,11 @@
 {
-  "name": "react-mixin-dependencies",
+  "name": "react-mixin-manager",
   "version": "0.1.0",
   "author": "Joe Hudson <joehud@gmail.com>",
-  "description": "simple registration system for react mixins easily allow mixins to depend on other mixins",
+  "description": "simple react mixin registration manager which allows mixins to depend on other mixins",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jhudson8/react-mixin-dependencies.git"
+    "url": "https://github.com/jhudson8/react-mixin-manager.git"
   },
   "keywords": [
     "react",
@@ -14,7 +14,6 @@
   "dependencies": {
     "react": "*"
   },
-  "analyze": false,
   "devDependencies": {
     "chai": "*",
     "mocha": "*",

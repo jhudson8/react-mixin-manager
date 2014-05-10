@@ -1,16 +1,17 @@
 var chai = require('chai'),
+    React = require('react'),
     expect = chai.expect,
-    reactMixinDependencies = require('../index'),
-    mixin1 = {type: 1},
-    mixin2 = {type: 2},
-    mixin3 = {type: 3},
-    mixin4 = {type: 4};
+    mixin1 = {mixin1: true},
+    mixin2 = {mixin2: true},
+    mixin3 = {mixin3: true},
+    mixin4 = {mixin4: true};
+
+require('../react-mixin-manager');
 
 describe('react-mixin-dependencies', function() {
-  var React;
   beforeEach(function() {
-    React = {};
-    reactMixinDependencies(React);
+    React.mixins._dependsOn = {};
+    React.mixins._mixins = {};
   });
 
   it('should return standard mixins', function() {
@@ -49,4 +50,16 @@ describe('react-mixin-dependencies', function() {
     expect(rtn).to.eql([mixin1, mixin2, mixin3]);
   });
 
+  it('should replace existing mixins', function() {
+    React.mixins.add('1', mixin1);
+    React.mixins.replace('1', mixin2);
+    rtn = React.mixins.get('1');
+    expect(rtn).to.eql([mixin2]);
+  });
+
+  it('should use "exists" to tell if a mixin has already been registered', function() {
+    React.mixins.add('1', mixin1);
+    expect(!!React.mixins.exists('1')).to.eql(true);
+    expect(React.mixins.exists('2')).to.eql(false);
+  });
 });

@@ -26,6 +26,8 @@
     define(['react'], function(React) {
       main(React);
     });
+  } else if (typeof exports !== 'undefined' && typeof require !== 'undefined') {
+    main(require('react'));
   } else {
     main(React);
   }
@@ -79,6 +81,24 @@ function(React) {
     }
   }
 
+  // allow for registered mixins to be extract just by using the standard React.createClass
+  var _createClass = React.createClass;
+  React.createClass = function(spec) {
+    if (spec.mixins) {
+      spec.mixins = React.mixins.get(spec.mixins);
+    }
+    return _createClass.apply(React, arguments);
+  };
+
+  function addMixin(name, mixin, depends, override) {
+    var mixins = React.mixins;
+    if (!override && mixins._mixins[name]) {
+      throw "the '" + name + "' mixin already exists.  Use React.mixins.replace to override";
+    }
+    mixins._dependsOn[name] = depends.length && depends;
+    mixins._mixins[name] = mixin;
+  }
+
   React.mixins = {
     /**
      * return the normalized mixins.  there can be N arguments with each argument being
@@ -96,9 +116,15 @@ function(React) {
     },
 
     add: function(name, mixin) {
-      var depends = Array.prototype.slice.call(arguments, 2);
-      React.mixins._dependsOn[name] = depends.length && depends;
-      React.mixins._mixins[name] = mixin;
+      addMixin(name, mixin, Array.prototype.slice.call(arguments, 2), false);
+    },
+
+    replace: function(name, mixin) {
+      addMixin(name, mixin, Array.prototype.slice.call(arguments, 2), true);
+    },
+
+    exists: function(name) {
+      return this._mixins[name] || false;
     },
 
     _dependsOn: {},
