@@ -23,9 +23,7 @@
  */
  (function(main) {
   if (typeof define === 'function' && define.amd) {
-    define(['react'], function(React) {
-      main(React);
-    });
+    define(['react'], main);
   } else if (typeof exports !== 'undefined' && typeof require !== 'undefined') {
     module.exports = function(React) {
       main(React);
