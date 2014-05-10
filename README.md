@@ -12,6 +12,10 @@ Installation
 
 Usage
 ------------
+A ```mixins``` object is added to the *React* object which includes the following functions:
+* add(mixinName, mixinImpl[, dependsOn, dependsOn, ...]);
+* get([mixinNameOrImpl, mixinNameOrImpl, ...]) // returns an array of mixins ready to assign to the ```mixins``` attribute when creating a React class
+
 Mixins can be registered and named for ease of use
 ```
 React.mixins.add('myMixin', myMixinImpl);
