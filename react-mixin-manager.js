@@ -27,7 +27,9 @@
       main(React);
     });
   } else if (typeof exports !== 'undefined' && typeof require !== 'undefined') {
-    main(require('react'));
+    module.exports = function(React) {
+      main(React);
+    };
   } else {
     main(React);
   }

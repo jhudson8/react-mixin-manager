@@ -11,7 +11,7 @@ React-mixin-manager is a simple manager for react mixins easily dependencies on 
 Installation
 ------------
 * Browser: include *react-mixin-manager[.min].js* after [React](http://facebook.github.io/react/)
-* CommonJS: ```require('react-mixin-manager');```
+* CommonJS: ```require('react-mixin-manager')(require('react'));```
 
 Usage
 ------------

@@ -1,1 +1,1 @@
-require('./react-mixin-manager');
+module.exports = require('./react-mixin-manager');
