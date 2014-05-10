@@ -16,7 +16,7 @@ A ```mixins``` object is added to the *React* object which includes the followin
 * add(mixinName, mixinImpl[, dependsOn, dependsOn, ...]);
 * get([mixinNameOrImpl, mixinNameOrImpl, ...]) // returns an array of mixins ready to assign to the ```mixins``` attribute when creating a React class
 
-Mixins can be registered and named for ease of use
+Mixins can be registered and named for ease of use (and resuse as mixins can depend on other mixins by name)
 ```
 React.mixins.add('myMixin', myMixinImpl);
 ...
