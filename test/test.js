@@ -6,7 +6,7 @@ var chai = require('chai'),
     mixin3 = {mixin3: true},
     mixin4 = {mixin4: true};
 
-require('../react-mixin-manager');
+require('../index')(React);
 
 describe('react-mixin-dependencies', function() {
   beforeEach(function() {
