@@ -16,8 +16,16 @@ Installation
 Usage
 ------------
 A ```mixins``` object is added to the *React* object which includes the following functions:
-* add(mixinName, mixin[, dependsOn, dependsOn, ...]): register the mixin to be referenced as the alias `mixinName` with any additional dependencies (by alias) as additional arguments;  this *will not* replace an existing mixin by that alias.
-* replace(mixinName, mixin[, dependsOn, dependsOn, ...]): same as above but it *will replace* an existing mixin with the same alias.
+
+```
+add(mixinName, mixin[, dependsOn, dependsOn, ...])
+```
+Register the mixin to be referenced as the alias `mixinName` with any additional dependencies (by alias) as additional arguments.  This *will not* replace an existing mixin by that alias.
+
+```
+replace(mixinName, mixin[, dependsOn, dependsOn, ...])
+```
+Same as above but it *will replace* an existing mixin with the same alias.
 
 
 Standard alias replacement
