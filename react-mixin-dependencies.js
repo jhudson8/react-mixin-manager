@@ -21,7 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-(function(React) {
+ (function(main) {
+  if (typeof define === 'function' && define.amd) {
+    define(['react'], function(React) {
+      main(React);
+    });
+  } else {
+    main(React);
+  }
+})(
+function(React) {
 
   /**
    * return the normalized mixin list
@@ -95,4 +104,5 @@
     _dependsOn: {},
     _mixins: {}
   };
-})(React);
+}
+);

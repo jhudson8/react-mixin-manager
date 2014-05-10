@@ -18,8 +18,7 @@ function replaceTokens(content) {
 }
 
 var contents = fs.readFileSync('./lib/core.js', {encoding: 'utf8'});
-write('react-mixin-dependencies-amd', 'amd', contents);
-write('react-mixin-dependencies', 'global', contents);
+write('react-mixin-dependencies', 'browser', contents);
 write('index', 'commonjs', contents);
 
 // var minimized = UglifyJS.minify(fs.readFileSync('./react-mixin-dependencies.js', {encoding: 'utf8'}));
