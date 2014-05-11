@@ -11,10 +11,8 @@
     "react",
     "mixin"
   ],
-  "dependencies": {
-    "react": "*"
-  },
   "devDependencies": {
+    "react": "*",
     "chai": "*",
     "mocha": "*",
     "uglify-js": "*"
