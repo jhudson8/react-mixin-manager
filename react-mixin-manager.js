@@ -58,7 +58,7 @@
           rtn.push(mixin);
           index[name] = true;
         } else {
-          throw "invalid mixin '" + name + "'";
+          throw 'invalid mixin "' + name + '"';
         }
       }
     }
@@ -92,7 +92,7 @@
   function addMixin(name, mixin, depends, override) {
     var mixins = React.mixins;
     if (!override && mixins._mixins[name]) {
-      throw "the '" + name + "' mixin already exists.  Use React.mixins.replace to override";
+      throw 'the "' + name + '" mixin already exists.  Use React.mixins.replace to override';
     }
     mixins._dependsOn[name] = depends.length && depends;
     mixins._mixins[name] = mixin;
