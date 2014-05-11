@@ -31,8 +31,7 @@
   } else {
     main(React);
   }
-})(
-function(React) {
+})(function(React) {
 
   /**
    * return the normalized mixin list
@@ -130,5 +129,4 @@ function(React) {
     _dependsOn: {},
     _mixins: {}
   };
-}
-);
+});
