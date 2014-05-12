@@ -6,7 +6,7 @@ React-mixin-manager is a simple manager which allows mixins to be referenced by 
 1. React mixins can be much more granular (because they are reused)
 2. Reduce a lot of DRY code when it comes to mixins because they can depend on existing functionality
 3. Less chance of mixin duplicate function name collision (because they are more granular and reused)
-4. 3rd party mixins can expose internal behaviors as granular mixins to be overridden by consumers
+4. 3rd party mixins can expose internal behaviors as registered mixins to be overridden by consumers
 
 Installation
 ------------
