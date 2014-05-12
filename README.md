@@ -1,7 +1,7 @@
 react-mixin-manager
 ========================
 
-React-mixin-manager is a simple manager for react mixins easily dependencies on other mixins.  This has several beneficial qualities:
+React-mixin-manager is a simple manager which allows mixins to be referenced by an alias and include dependencies on other mixins (by their alias):
 
 1. React mixins can be much more granular (because they are reused)
 2. Reduce a lot of DRY code when it comes to mixins because they can depend on existing functionality
