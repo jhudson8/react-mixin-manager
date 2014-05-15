@@ -52,4 +52,6 @@ React.createClass({
 // mixin1Impl, mixin2Impl, anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times)
 ```
 
+***note***: if the registered mixin is a function, it will be executed and the return value will be used as the mixin
+
 see [more examples](https://github.com/jhudson8/react-mixin-manager/blob/master/test/test.js#L17)

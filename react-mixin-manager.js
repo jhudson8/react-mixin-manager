@@ -47,16 +47,26 @@
      */
     function addTo(name) {
       if (!index[name]) {
-        var mixin = React.mixins._mixins[name];
+        var mixin = React.mixins._mixins[name],
+            checkAgain = false;
         if (mixin) {
+          if (typeof mixin === 'function') {
+            mixin = mixin();
+            checkAgain = true;
+          }
           var depends = React.mixins._dependsOn[name];
           if (depends) {
             for (var i=0; i<depends.length; i++) {
               addTo(depends[i]);
             }
           }
-          rtn.push(mixin);
           index[name] = true;
+          if (checkAgain) {
+            get([mixin], index, rtn);
+          } else {
+            rtn.push(mixin);
+          }
+          
         } else {
           throw 'invalid mixin "' + name + '"';
         }
