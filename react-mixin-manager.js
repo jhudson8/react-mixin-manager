@@ -1,7 +1,9 @@
 /*!
- * react-mixin-dependencies v0.1.3
+ * react-mixin-manager v0.1.3
+ * https://github.com/jhudson8/react-mixin-manager
  * 
- * Copyright (c) 2014 Joe Hudson
+ * 
+ * Copyright (c) 2014 Joe Hudson<joehud_AT_gmail.com>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
