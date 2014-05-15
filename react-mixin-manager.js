@@ -1,5 +1,5 @@
 /*!
- * react-mixin-dependencies v0.1.2
+ * react-mixin-dependencies v0.1.3
  * 
  * Copyright (c) 2014 Joe Hudson
  * 
@@ -108,6 +108,10 @@
     mixins._mixins[name] = mixin;
   }
 
+  function GROUP() {
+    // empty function which is used only as a placeholder to list dependencies
+  }
+
   React.mixins = {
     /**
      * return the normalized mixins.  there can be N arguments with each argument being
@@ -122,6 +126,10 @@
           index = {};
       get(Array.prototype.slice.call(arguments), index, rtn);
       return rtn;
+    },
+
+    group: function(name) {
+      addMixin(name, GROUP, Array.prototype.slice.call(arguments, 1), false);
     },
 
     add: function(name, mixin) {

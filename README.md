@@ -13,7 +13,7 @@ Installation
 * Browser: include *react-mixin-manager[.min].js* after [React](http://facebook.github.io/react/)
 * CommonJS: ```require('react-mixin-manager')(require('react'));```
 
-Usage
+Usage / API
 ------------
 A ```mixins``` object is added to the *React* object which includes the following functions:
 
@@ -26,6 +26,11 @@ Register the mixin to be referenced as the alias `mixinName` with any additional
 replace(mixinName, mixin[, dependsOn, dependsOn, ...])
 ```
 Same as above but it *will replace* an existing mixin with the same alias.
+
+```
+group(mixinName[, dependsOn, dependsON...])
+```
+Similar to registering a mixin with depenencies without the mixin.  You are grouping mixins into a single mixin name to be used.
 
 
 Standard alias replacement
