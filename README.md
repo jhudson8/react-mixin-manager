@@ -15,7 +15,7 @@ Installation
 * Browser: include *react-mixin-manager[.min].js* after [React](http://facebook.github.io/react/)
 * CommonJS: ```require('react-mixin-manager')(require('react'));```
 
-Usage / API
+API
 ------------
 A ```mixins``` object is added to the *React* object which includes the following functions:
 
@@ -34,7 +34,8 @@ alias(mixinName[, dependsOn, dependsON...])
 ```
 Similar to registering a mixin with depenencies without the mixin.  You are grouping mixins into a single mixin name to be used.
 
-
+Examples
+-------------
 Standard alias replacement
 ```
 // register myMixinImpl as the alias "myMixin"
