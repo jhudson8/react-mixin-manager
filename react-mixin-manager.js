@@ -104,7 +104,7 @@
   function addMixin(name, mixin, depends, override) {
     var mixins = React.mixins;
     if (!override && mixins._mixins[name]) {
-      throw 'the "' + name + '" mixin already exists.  Use React.mixins.replace to override';
+      return;
     }
     mixins._dependsOn[name] = depends.length && depends;
     mixins._mixins[name] = mixin;
@@ -130,7 +130,7 @@
       return rtn;
     },
 
-    group: function(name) {
+    alias: function(name) {
       addMixin(name, GROUP, Array.prototype.slice.call(arguments, 1), false);
     },
 

@@ -30,7 +30,7 @@ replace(mixinName, mixin[, dependsOn, dependsOn, ...])
 Same as above but it *will replace* an existing mixin with the same alias.
 
 ```
-group(mixinName[, dependsOn, dependsON...])
+alias(mixinName[, dependsOn, dependsON...])
 ```
 Similar to registering a mixin with depenencies without the mixin.  You are grouping mixins into a single mixin name to be used.
 
