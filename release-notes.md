@@ -2,7 +2,12 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.3.0...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.4.0...master)
+
+## v0.4.0 - May 18th, 2014
+- add new "inject" functionality - 7fc5324
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.3.0...v0.4.0)
 
 ## v0.3.0 - May 16th, 2014
 - change "group" function name to "alias" - 21e6242
