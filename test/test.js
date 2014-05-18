@@ -62,4 +62,13 @@ describe('react-mixin-dependencies', function() {
     expect(!!React.mixins.exists('1')).to.eql(true);
     expect(React.mixins.exists('2')).to.eql(false);
   });
+
+  it('should allow secondary dependencies (dependsOn)', function() {
+    // secondary dependencies do not need the related mixins to be defined
+    React.mixins.inject('1', '2');
+    React.mixins.add('1', mixin1);
+    React.mixins.add('2', mixin2);
+    rtn = React.mixins.get('1');
+    expect(rtn).to.eql([mixin2, mixin1]);
+  });
 });

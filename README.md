@@ -24,15 +24,23 @@ add(mixinName, mixin[, dependsOn, dependsOn, ...])
 ```
 Register the mixin to be referenced as the alias `mixinName` with any additional dependencies (by alias) as additional arguments.  This *will not* replace an existing mixin by that alias.
 
+
 ```
 replace(mixinName, mixin[, dependsOn, dependsOn, ...])
 ```
 Same as above but it *will replace* an existing mixin with the same alias.
 
 ```
+inject(mixinName, dependsOn[, dependsOn, ...]);
+```
+Add additional named dependencies to a mixin that has already been registered.
+
+
+```
 alias(mixinName[, dependsOn, dependsON...])
 ```
 Similar to registering a mixin with depenencies without the mixin.  You are grouping mixins into a single mixin name to be used.
+
 
 Examples
 -------------

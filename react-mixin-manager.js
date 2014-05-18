@@ -56,12 +56,9 @@
             mixin = mixin();
             checkAgain = true;
           }
-          var depends = React.mixins._dependsOn[name];
-          if (depends) {
-            for (var i=0; i<depends.length; i++) {
-              addTo(depends[i]);
-            }
-          }
+          get(React.mixins._dependsOn[name], index, rtn);
+          get(React.mixins._dependsInjected[name], index, rtn);
+
           index[name] = true;
           if (checkAgain) {
             get([mixin], index, rtn);
@@ -75,8 +72,7 @@
       }
     }
 
-    for (var i=0; i<values.length; i++) {
-      var mixin = values[i];
+    function handleMixin(mixin) {
       if (mixin) {
         if (Array.isArray(mixin)) {
           // flatten it out
@@ -89,6 +85,14 @@
           rtn.push(mixin);
         }
       }
+    }
+
+    if (Array.isArray(values)) {
+      for (var i=0; i<values.length; i++) {
+        handleMixin(values[i]);
+      }      
+    } else {
+      handleMixin(values);
     }
   }
 
@@ -130,6 +134,19 @@
       return rtn;
     },
 
+    /**
+     * Inject dependencies that were not originally defined when a mixin was registered
+     * @param name {string} the main mixin name
+     * @param (any additional) {string} dependencies that should be registered against the mixin
+     */
+    inject: function(name) {
+      var l = this._dependsInjected[name];
+      if (!l) {
+        l = this._dependsInjected[name] = [];
+      }
+      l.push(Array.prototype.slice.call(arguments, 1));
+    },
+
     alias: function(name) {
       addMixin(name, GROUP, Array.prototype.slice.call(arguments, 1), false);
     },
@@ -147,6 +164,7 @@
     },
 
     _dependsOn: {},
+    _dependsInjected: {},
     _mixins: {}
   };
 });
