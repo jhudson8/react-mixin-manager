@@ -1,7 +1,7 @@
 react-mixin-manager
 ========================
 
-***Problem:*** React mixins get cumbersome because, if they are done right, they should be as granular as possible.  This is difficult to impossible because ***a)*** mixins can not duplicate attribute names with another mixin or the parent component and ***b)*** mixins must assume that all required functionality is available (creating DRY issues with multiple mixins using the same basic functionality).
+***Problem:*** React mixins get cumbersome because, if they are done right, they should be as granular as possible.  This is can be difficult sometimes because ***a)*** mixins can not duplicate attribute names and ***b)*** mixins must assume that all required functionality is available (creating DRY issues with multiple mixins using the same basic functionality).
 
 ***Solution:*** Provide a manager that allows registering mixins by an alias and allowing dependencies to be specified on that mixin.  By allowing mixins to be included by alias, we can determine all dependencies and ensure that they are included (and not duplicated) as well.
 
