@@ -181,7 +181,6 @@
       return {};
     },
     deferUpdate: function() {
-      console.log('deferUpdate');
       var state = this.state;
       if (!state._deferUpdate) {
         state._deferUpdate = true;
@@ -189,7 +188,6 @@
         setTimeout(function() {
           delete state._deferUpdate;
           if (self.isMounted()) {
-            console.log('forceUpdate');
             self.forceUpdate();
           }
         }, 0);
