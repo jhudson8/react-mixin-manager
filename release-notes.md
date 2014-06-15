@@ -2,7 +2,12 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.4.0...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.5.0...master)
+
+## v0.5.0 - June 14th, 2014
+- added the "deferUpdate" mixin - 4e74d21
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.4.0...v0.5.0)
 
 ## v0.4.0 - May 18th, 2014
 - add new "inject" functionality - 7fc5324

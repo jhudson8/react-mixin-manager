@@ -1,5 +1,5 @@
 /*!
- * react-mixin-manager v0.4.0
+ * react-mixin-manager v0.5.0
  * https://github.com/jhudson8/react-mixin-manager
  * 
  * 
