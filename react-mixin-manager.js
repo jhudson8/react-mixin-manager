@@ -167,4 +167,33 @@
     _dependsInjected: {},
     _mixins: {}
   };
+
+  /**
+   * mixin that exposes a "deferUpdate" method which will call forceUpdate after a setTimeout(0) to defer the update.
+   * This allows the forceUpdate method to be called multiple times while only executing a render 1 time.  This will
+   * also ensure the component is mounted before calling forceUpdate.
+   *
+   * It is added to mixin manager directly because it serves a purpose that benefits when multiple plugins use it
+   */
+  React.mixins.add('deferUpdate', {
+    getInitialState: function() {
+      // ensure that the state exists because we don't want to call setState (which will cause a render)
+      return {};
+    },
+    deferUpdate: function() {
+      console.log('deferUpdate');
+      var state = this.state;
+      if (!state._deferUpdate) {
+        state._deferUpdate = true;
+        var self = this;
+        setTimeout(function() {
+          delete state._deferUpdate;
+          if (self.isMounted()) {
+            console.log('forceUpdate');
+            self.forceUpdate();
+          }
+        }, 0);
+      }
+    }
+  });
 });

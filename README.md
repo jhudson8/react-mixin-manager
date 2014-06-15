@@ -70,4 +70,11 @@ React.createClass({
 
 ***note***: if the registered mixin is a function, it will be executed and the return value will be used as the mixin
 
+Provided Mixins
+----------------
+```deferUpdate```
+
+Exposes a method called ```deferUpdate```.  This is like forceUpdate but after a setTimeout(0).  Any calls to deferUpdate before the callback fires will execute only a single ```forceUpdate``` call.  This can be beneficial for mixins that listen to certain events that might cause a render multiple times unnecessarily.
+
+
 see [more examples](https://github.com/jhudson8/react-mixin-manager/blob/master/test/test.js#L17)
