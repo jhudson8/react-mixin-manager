@@ -72,7 +72,7 @@ React.createClass({
 
 Provided Mixins
 ----------------
-```deferUpdate```
+***deferUpdate***
 
 Exposes a method called ```deferUpdate```.  This is like forceUpdate but after a setTimeout(0).  Any calls to deferUpdate before the callback fires will execute only a single ```forceUpdate``` call.  This can be beneficial for mixins that listen to certain events that might cause a render multiple times unnecessarily.
 
