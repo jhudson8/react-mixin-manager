@@ -2,7 +2,13 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.5.1...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.5.2...master)
+
+## v0.5.2 - June 16th, 2014
+- allow add/replace signature (name, array) where array is [mixin, dependencies...] - 798c6a2
+- add bower.json - ea204e6
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.5.1...v0.5.2)
 
 ## v0.5.1 - June 14th, 2014
 - remove console.log - 3e2bc8a
