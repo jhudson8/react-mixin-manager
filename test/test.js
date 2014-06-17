@@ -32,6 +32,13 @@ describe('react-mixin-dependencies', function() {
     expect(rtn).to.eql([mixin1, mixin2]);
   });
 
+  it('should be able to register an array with first element as mixin and all others as dependencies', function() {
+    React.mixins.add('1', mixin1);
+    React.mixins.add('2', [mixin2, '1']);
+    rtn = React.mixins.get('2');
+    expect(rtn).to.eql([mixin1, mixin2]);
+  });
+
   it('should return named n-level dependencies and not duplicate', function() {
     React.mixins.add('1', mixin1);
     React.mixins.add('2', mixin2, '1');

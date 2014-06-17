@@ -67,7 +67,7 @@
           }
           
         } else {
-          throw 'invalid mixin "' + name + '"';
+          throw new Error('invalid mixin "' + name + '"');
         }
       }
     }
@@ -118,6 +118,14 @@
     // empty function which is used only as a placeholder to list dependencies
   }
 
+  function mixinParams(args, override) {
+    if (Array.isArray(args[1])) {
+      return [args[0], args[1][0], Array.prototype.slice.call(args[1], 1), override];
+    } else {
+      return [args[0], args[1], Array.prototype.slice.call(args, 2), override]
+    }
+  }
+
   React.mixins = {
     /**
      * return the normalized mixins.  there can be N arguments with each argument being
@@ -152,11 +160,11 @@
     },
 
     add: function(name, mixin) {
-      addMixin(name, mixin, Array.prototype.slice.call(arguments, 2), false);
+      addMixin.apply(this, mixinParams(arguments, false));
     },
 
     replace: function(name, mixin) {
-      addMixin(name, mixin, Array.prototype.slice.call(arguments, 2), true);
+      addMixin.apply(this, mixinParams(arguments, true));
     },
 
     exists: function(name) {
