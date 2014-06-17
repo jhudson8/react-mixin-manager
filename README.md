@@ -10,6 +10,9 @@ react-mixin-manager
 3. Less chance of mixin duplicate function name collision (because they are more granular and reused)
 4. 3rd party mixins can expose internal behaviors as registered mixins to be overridden by consumers
 
+***To see an example app using this (and other react plugins working together), [check this out](https://github.com/jhudson8/react-plugins-united-example)***
+
+
 Installation
 ------------
 * Browser: include *react-mixin-manager[.min].js* after [React](http://facebook.github.io/react/)
