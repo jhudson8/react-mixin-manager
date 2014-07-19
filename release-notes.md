@@ -2,7 +2,12 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.5.2...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.6.0...master)
+
+## v0.6.0 - July 19th, 2014
+- add React component provided mixin parameters - e574075
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.5.2...v0.6.0)
 
 ## v0.5.2 - June 16th, 2014
 - allow add/replace signature (name, array) where array is [mixin, dependencies...] - 798c6a2
