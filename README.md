@@ -137,3 +137,52 @@ React.createClass({
   }
 });
 ```
+
+
+Sections
+---------------
+
+### Advanced Features
+
+#### Dynamic Mixins
+
+If the mixin that is registered is a function, the result of that function will be used as the actual mixin provided to the React component.  This can be useful if runtime conditions need to be evaluated to determine what should be exposed to the component.
+
+```
+React.mixins.add('myMixin', function() {
+  if (window.something) {
+    return mixin1;
+  } else {
+    return mixin2;
+  }
+});
+...
+var myComponent = React.createClass({
+  mixins: ['myMixin'],
+  ...
+});
+```
+In this example, when *myComponent* is declared (not instantiated), based on the *something* global variable, either *mixin1* or *mixin2* will be applied.
+
+
+#### Mixins With Parameters
+
+It is occasionally useful to add dynamic behavior to the mixin that is not based on some property set by the parent but rather a property that is internally defined by the component being instantiated.  This can be done by using *Dynamic Mixins* (see above).  When a function is used to return the mixin, any parameters supplied when referencing the mixin will supplied as arguments.
+
+```
+React.mixins.add('myMixin', function(something) {
+  if (something) {
+    return mixin1;
+  } else {
+    return mixin2;
+  }
+});
+...
+var myComponent = React.createClass({
+  mixins: ['myMixin("foo")'],
+  ...
+});
+```
+In this example, when *myComponent* is declared (not instantiated), based on the *something* variable provided by the React component using the mixin, either *mixin1* or *mixin2* will be applied.
+
+*note: booleans and numbers can be used as well so make sure to wrap strings with quotes*

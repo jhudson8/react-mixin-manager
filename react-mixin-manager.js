@@ -49,12 +49,23 @@
      */
     function addTo(name) {
       if (!index[name]) {
-        var mixin = React.mixins._mixins[name],
+        var mixinName = name,
+            mixinParams,
+            match = mixinName.match(/^([^\(]*)\s*\(([^\)]*)\)\s*/);
+        if (match) {
+          mixinName = match[1];
+          // there can be no function calls here because of the regex match
+          mixinParams = eval('[' + match[2] + ']');
+        }
+        var mixin = React.mixins._mixins[mixinName],
             checkAgain = false;
+
         if (mixin) {
           if (typeof mixin === 'function') {
-            mixin = mixin();
+            mixin = mixin.apply(this, mixinParams || []);
             checkAgain = true;
+          } else if (mixinParams) {
+            throw new Error('the mixin "' + name + '" does not support parameters');
           }
           get(React.mixins._dependsOn[name], index, rtn);
           get(React.mixins._dependsInjected[name], index, rtn);

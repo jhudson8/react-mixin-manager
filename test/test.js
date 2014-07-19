@@ -4,7 +4,13 @@ var chai = require('chai'),
     mixin1 = {mixin1: true},
     mixin2 = {mixin2: true},
     mixin3 = {mixin3: true},
-    mixin4 = {mixin4: true};
+    mixin4 = {mixin4: true},
+    mixinWithParams = function(param1, param2) {
+      return {
+        param1: param1,
+        param2: param2
+      };
+    };
 
 require('../index')(React);
 
@@ -21,21 +27,21 @@ describe('react-mixin-dependencies', function() {
 
   it('should return named mixins', function() {
     React.mixins.add('1', mixin1);
-    rtn = React.mixins.get('1', mixin2);
+    var rtn = React.mixins.get('1', mixin2);
     expect(rtn).to.eql([mixin1, mixin2]);
   });
 
   it('should return named mixins and dependencies', function() {
     React.mixins.add('1', mixin1);
     React.mixins.add('2', mixin2, '1');
-    rtn = React.mixins.get('2');
+    var rtn = React.mixins.get('2');
     expect(rtn).to.eql([mixin1, mixin2]);
   });
 
   it('should be able to register an array with first element as mixin and all others as dependencies', function() {
     React.mixins.add('1', mixin1);
     React.mixins.add('2', [mixin2, '1']);
-    rtn = React.mixins.get('2');
+    var rtn = React.mixins.get('2');
     expect(rtn).to.eql([mixin1, mixin2]);
   });
 
@@ -44,7 +50,7 @@ describe('react-mixin-dependencies', function() {
     React.mixins.add('2', mixin2, '1');
     React.mixins.add('3', mixin3, '1', '2');
     React.mixins.add('4', mixin4, '1', '3');
-    rtn = React.mixins.get('4', '2');
+    var rtn = React.mixins.get('4', '2');
     expect(rtn).to.eql([mixin1, mixin2, mixin3, mixin4]);
   });
 
@@ -53,14 +59,14 @@ describe('react-mixin-dependencies', function() {
     React.mixins.add('2', mixin2);
     React.mixins.add('3', mixin3);
     React.mixins.add('4', mixin4);
-    rtn = React.mixins.get('1', ['2', '3']);
+    var rtn = React.mixins.get('1', ['2', '3']);
     expect(rtn).to.eql([mixin1, mixin2, mixin3]);
   });
 
   it('should replace existing mixins', function() {
     React.mixins.add('1', mixin1);
     React.mixins.replace('1', mixin2);
-    rtn = React.mixins.get('1');
+    var rtn = React.mixins.get('1');
     expect(rtn).to.eql([mixin2]);
   });
 
@@ -75,7 +81,17 @@ describe('react-mixin-dependencies', function() {
     React.mixins.inject('1', '2');
     React.mixins.add('1', mixin1);
     React.mixins.add('2', mixin2);
-    rtn = React.mixins.get('1');
+    var rtn = React.mixins.get('1');
     expect(rtn).to.eql([mixin2, mixin1]);
+  });
+
+  it('should support parameters in mixin references', function() {
+    React.mixins.add('p', mixinWithParams);
+    var rtn = React.mixins.get('p("foo")');
+    expect(rtn).to.eql([{param1: 'foo', param2: undefined}]);
+
+    // multiple parameters should be supported as well - all will be converted to strings (and spaces will exist in the arguments)
+    rtn = React.mixins.get('p("foo","bar")');
+    expect(rtn).to.eql([{param1: 'foo', param2: 'bar'}]);
   });
 });
