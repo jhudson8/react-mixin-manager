@@ -12,6 +12,11 @@ Give your components advanced mixin capabilities including mixin grouping and al
 4. 3rd party mixins can expose internal behaviors as registered mixins to be overridden by consumers
 
 
+Docs
+-------------
+Instead of reading this README file, you can [view it in fancydocs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-mixin-manager) for a better experience.
+
+
 Installation
 ------------
 * Browser: include *react-mixin-manager[.min].js* after [React](http://facebook.github.io/react/)
@@ -48,9 +53,9 @@ React.mixins.add('mixin1', mixin1Impl);
 React.mixins.add('mixin2', mixin2Impl, 'mixin1');
 ...
 React.createClass({
+  // mixin1Impl, mixin2Impl, anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times)
   mixins: ['mixin2', anyOtherPlainOldMixin]
 })
-// mixin1Impl, mixin2Impl, anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times)
 ```
 ***note***: if the registered mixin is a function, it will be executed and the return value will be used as the mixin
 
@@ -63,23 +68,56 @@ React.createClass({
 Same as ```React.mixins.add``` but it *will replace* an existing mixin with the same alias.
 
 
+
 #### inject(mixinName, dependsOn[, dependsOn, ...])
 * ***mixinName***: (string) the alias to be used when including the mixin for a React component
 * ***dependsOn***: (string or array) the alias of another mixin that must be included if this mixin is included
 
-Add additional dependencies to a mixin that has already been registered.
+Add additional dependencies to a mixin that has already been registered.  This is not useful for mixins that you create but can be useful to group additional mixins when 3rd party mixins are referenced.
+
+```
+// register myMixinImpl as the alias "myMixin"
+React.mixins.add('myMixin', myMixinImpl);
+
+// "tpMixin" is a 3rd party mixin that has already been registered which has no dependencies
+React.mixins.inject('tpMixin', 'myMixin');
+...
+React.createClass({
+  // "tpMixin" and "myMixin" will be included
+  mixins: ['tpMixin']
+})
+
+```
 
 
 #### alias(mixinName, dependsOn[, dependsOn, ...])
 * ***mixinName***: (string) the alias to be used when including the mixin for a React component
 * ***dependsOn***: (string or array) the alias of another mixin that must be included if this mixin is included
 
-Define an alias which can be used to include multiple mixins.  This is similar to registering a mixin with dependencies without including the actual mixin.
+Define an alias which can be used to group multiple named mixins together so that a single mixin alias will import all grouped mixins.
+
+```
+// register mixin1Impl as the alias "mixin1"
+React.mixins.add('mixin1', mixin1Impl);
+
+// register mixin2Impl as the alias "mixin2"
+React.mixins.add('mixin1', mixin1Impl);
+
+// group these mixins into a single alias "all" that can be referenced
+React.mixins.alias('all', 'mixin1', 'mixin2');
+
+...
+React.createClass({
+  // "mixin1" and "mixin2" will be included
+  mixins: ['all']
+})
+```
 
 
 API: Mixins
 ----------------
 ### deferUpdate
+Mixin used to make available a single function ```deferUpdate``` to your component.
 
 #### deferUpdate()
 
