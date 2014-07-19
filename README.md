@@ -121,4 +121,5 @@ Mixin used to make available a single function ```deferUpdate``` to your compone
 
 #### deferUpdate()
 
-This is similar to the standard *forceUpdate* but after a setTimeout(0).  Any calls to deferUpdate before the callback fires will execute only a single ```forceUpdate``` call.  This can be beneficial for mixins that listen to certain events that might cause a render multiple times unnecessarily.
+This is similar to [forceUpdate](http://facebook.github.io/react/docs/component-api.html) but after a setTimeout(0).  Any calls to deferUpdate before the callback fires will execute only a single [forceUpdate](http://facebook.github.io/react/docs/component-api.html) call.  This can be beneficial for mixins that listen to certain events that might cause a render multiple times unnecessarily.
+
