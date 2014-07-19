@@ -34,6 +34,8 @@ API
 
 Register the mixin to be referenced as the alias `mixinName` with any additional dependencies (by alias) as additional arguments.  This *will not* replace an existing mixin by that alias.
 
+##### Examples
+
 *Standard mixin*
 ```
 // register myMixinImpl as the alias "myMixin"
@@ -75,6 +77,7 @@ Same as ```React.mixins.add``` but it *will replace* an existing mixin with the 
 
 Add additional dependencies to a mixin that has already been registered.  This is not useful for mixins that you create but can be useful to group additional mixins when 3rd party mixins are referenced.
 
+##### Examples
 ```
 // register myMixinImpl as the alias "myMixin"
 React.mixins.add('myMixin', myMixinImpl);
@@ -96,6 +99,7 @@ React.createClass({
 
 Define an alias which can be used to group multiple named mixins together so that a single mixin alias will import all grouped mixins.
 
+##### Examples
 ```
 // register mixin1Impl as the alias "mixin1"
 React.mixins.add('mixin1', mixin1Impl);
@@ -123,3 +127,13 @@ Mixin used to make available a single function ```deferUpdate``` to your compone
 
 This is similar to [forceUpdate](http://facebook.github.io/react/docs/component-api.html) but after a setTimeout(0).  Any calls to deferUpdate before the callback fires will execute only a single [forceUpdate](http://facebook.github.io/react/docs/component-api.html) call.  This can be beneficial for mixins that listen to certain events that might cause a render multiple times unnecessarily.
 
+##### Examples
+```
+React.createClass({
+  mixin: ['deferUpdate'],
+
+  somethingThatRequiresUpdate: function() {
+    this.deferUpdate();
+  }
+});
+```
