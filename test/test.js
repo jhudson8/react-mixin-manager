@@ -18,6 +18,7 @@ describe('react-mixin-dependencies', function() {
   beforeEach(function() {
     React.mixins._dependsOn = {};
     React.mixins._mixins = {};
+    React.mixins._dependsInjected = {};
   });
 
   it('should return standard mixins', function() {
@@ -93,5 +94,12 @@ describe('react-mixin-dependencies', function() {
     // multiple parameters should be supported as well - all will be converted to strings (and spaces will exist in the arguments)
     rtn = React.mixins.get('p("foo","bar")');
     expect(rtn).to.eql([{param1: 'foo', param2: 'bar'}]);
+  });
+
+  it('should include dependencies with parameters references', function() {
+    React.mixins.add('1', mixin1);
+    React.mixins.add('p', mixinWithParams, '1');
+    var rtn = React.mixins.get('p("foo")');
+    expect(rtn).to.eql([mixin1, {param1: 'foo', param2: undefined}]);
   });
 });

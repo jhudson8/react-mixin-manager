@@ -48,29 +48,30 @@
      * @param the mixin name
      */
     function addTo(name) {
-      if (!index[name]) {
-        var mixinName = name,
-            mixinParams,
-            match = mixinName.match(/^([^\(]*)\s*\(([^\)]*)\)\s*/);
-        if (match) {
-          mixinName = match[1];
+      var indexName = name,
+          match = name.match(/^([^\(]*)\s*\(([^\)]*)\)\s*/),
+          params = match && match[2];
+      name = match && match[1] || name;
+
+      if (!index[indexName]) {
+        if (params) {
           // there can be no function calls here because of the regex match
-          mixinParams = eval('[' + match[2] + ']');
+          params = eval('[' + params + ']');
         }
-        var mixin = React.mixins._mixins[mixinName],
+        var mixin = React.mixins._mixins[name],
             checkAgain = false;
 
         if (mixin) {
           if (typeof mixin === 'function') {
-            mixin = mixin.apply(this, mixinParams || []);
+            mixin = mixin.apply(this, params || []);
             checkAgain = true;
-          } else if (mixinParams) {
+          } else if (params) {
             throw new Error('the mixin "' + name + '" does not support parameters');
           }
           get(React.mixins._dependsOn[name], index, rtn);
           get(React.mixins._dependsInjected[name], index, rtn);
 
-          index[name] = true;
+          index[indexName] = true;
           if (checkAgain) {
             get([mixin], index, rtn);
           } else {
