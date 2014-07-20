@@ -2,7 +2,12 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.6.0...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.6.1...master)
+
+## v0.6.1 - July 19th, 2014
+- bug fix: include dependencies when mixin parameters are used - ec68956
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.6.0...v0.6.1)
 
 ## v0.6.0 - July 19th, 2014
 - add React component provided mixin parameters - e574075
