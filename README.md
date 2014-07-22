@@ -1,26 +1,24 @@
 react-mixin-manager
 ========================
-Give your components advanced mixin capabilities including mixin grouping and aliasing with dependency management.
+Enhance React with full-featured mixin dependency management.
 
-***Problem:*** React mixins get cumbersome because, if they are done right, they should be as granular as possible.  This is can be difficult sometimes because ***a)*** mixins can not duplicate attribute names and ***b)*** mixins must assume that all required functionality is available (creating DRY issues with multiple mixins using the same basic functionality).
+* Mixins can be registered by a simple alias
+* Mixins can depend on other mixins to reduce DRY and create more granular mixins
+* Third party mixins can be overridden to increase flexibility
+* Reduce the chance of mixin attribute duplication
 
-***Solution:*** Provide a manager that allows registering mixins by an alias and allowing dependencies to be specified on that mixin.  By allowing mixins to be included by alias, we can determine all dependencies and ensure that they are included (and not duplicated) as well.
+```
+// register a mixin to an alias
+React.mixins.add('the-alias', myMixin);
 
-1. React mixins can be much more granular (because they are reused)
-2. Reduce a lot of DRY code when it comes to mixins because they can depend on existing functionality
-3. Less chance of mixin duplicate function name collision (because they are more granular and reused)
-4. 3rd party mixins can expose internal behaviors as registered mixins to be overridden by consumers
+// reference the alias when creating a component
+React.createClass({
+  mixins: ['the-alias']
+})
+```
 
+[View the fancydocs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-mixin-manager)
 
-Docs
--------------
-Instead of reading this README file, you can [view it in fancydocs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-mixin-manager) for a better experience.
-
-
-Installation
-------------
-* Browser: include *react-mixin-manager[.min].js* after [React](http://facebook.github.io/react/)
-* CommonJS: ```require('react-mixin-manager')(require('react'));```
 
 API
 ------------
@@ -141,6 +139,11 @@ React.createClass({
 
 Sections
 ---------------
+
+### Installation
+* Browser: include *react-mixin-manager[.min].js* after [React](http://facebook.github.io/react/)
+* CommonJS: ```require('react-mixin-manager')(require('react'));```
+
 
 ### Advanced Features
 
