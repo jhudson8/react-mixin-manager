@@ -59,6 +59,40 @@ React.createClass({
 ```
 ***note***: if the registered mixin is a function, it will be executed and the return value will be used as the mixin
 
+#### addOnceInitiated(mixinName, mixin[, dependsOn, dependsOn, ...])
+* ***mixinName***: (string) the alias to be used when including the mixin for a React component
+* ***mixin***: the mixin object
+* ***dependsOn***: (string or array) the alias of another mixin that must be included if this mixin is included
+
+Register the mixin to be referenced as the alias `mixinName` with any additional dependencies (by alias) as additional arguments.  This *will not* replace an existing mixin by that alias. ***This mixin will be once initiated if you specified it as mixin several times.***
+
+##### Examples
+
+*Standard mixin*
+```
+// register myMixinImpl as the alias "myMixin"
+React.mixins.addOnceInitiated('myMixin', myMixinImpl);
+...
+React.createClass({
+  mixins: ['myMixin("foo")', 'myMixin("bar")', anyOtherPlainOldMixin]
+})
+// myMixinImpl("foo", "bar"), anyOtherPlainOldMixin will be included
+```
+
+*Mixin with dependencies*
+```
+// register mixin1Impl as the alias "mixin1"
+React.mixins.add('mixin1', mixin1Impl);
+// register mixin2Impl as the alias "mixin2" with a dependency on the mixin defined by the alias "mixin1"
+React.mixins.addOnceInitiated('mixin2', mixin2Impl, 'mixin1');
+...
+React.createClass({
+  // mixin1Impl, mixin2Impl("foo", "bar", "test"), anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times)
+  mixins: ['mixin2("foo")', 'mixin2("bar")', 'mixin2("test")', anyOtherPlainOldMixin]
+})
+```
+
+
 
 #### replace(mixinName, mixin[, dependsOn, dependsOn, ...])
 * ***mixinName***: (string) the alias to be used when including the mixin for a React component
