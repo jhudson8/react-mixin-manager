@@ -39,10 +39,10 @@
    * return the normalized mixin list
    * @param values {Array} list of mixin entries
    * @param index {Object} hash which contains a truthy value for all named mixins that have been added
-   * @param onceInitiated {Object} hash which collects mixins and their parameters that should be initiated once
+   * @param initiatedOnce {Object} hash which collects mixins and their parameters that should be initiated once
    * @param rtn {Array} the normalized return array
    */
-  function get(values, index, onceInitiated, rtn) {
+  function get(values, index, initiatedOnce, rtn) {
 
     /**
      * add the named mixin and all un-added dependencies to the return array
@@ -65,8 +65,8 @@
 
         if (mixin) {
           if (typeof mixin === 'function') {
-            if (React.mixins._onceInitiated[name]){
-              onceInitiated[name] = (onceInitiated[name] || []).concat(params);
+            if (React.mixins._initiatedOnce[name]){
+              initiatedOnce[name] = (initiatedOnce[name] || []).concat(params);
               skip = true;
             } else {
               mixin = mixin.apply(this, params || []);
@@ -75,12 +75,12 @@
           } else if (params) {
             throw new Error('the mixin "' + name + '" does not support parameters');
           }
-          get(React.mixins._dependsOn[name], index, onceInitiated, rtn);
-          get(React.mixins._dependsInjected[name], index, onceInitiated, rtn);
+          get(React.mixins._dependsOn[name], index, initiatedOnce, rtn);
+          get(React.mixins._dependsInjected[name], index, initiatedOnce, rtn);
 
           index[indexName] = true;
           if (checkAgain) {
-            get([mixin], index, onceInitiated, rtn);
+            get([mixin], index, initiatedOnce, rtn);
           } else if (!skip) {
             rtn.push(mixin);
           }
@@ -95,7 +95,7 @@
       if (mixin) {
         if (Array.isArray(mixin)) {
           // flatten it out
-          get(mixin, index, onceInitiated, rtn);
+          get(mixin, index, initiatedOnce, rtn);
         } else if (typeof mixin === 'string') {
           // add the named mixin and all of it's dependencies
           addTo(mixin);
@@ -120,19 +120,19 @@
    * @param mixins {Object} hash of mixins keys and list of its parameters
    * @param rtn {Array} the normalized return array
    */
-  function getOnceInitiated(mixins, rtn){
+  function getInitiatedOnce(mixins, rtn) {
 
     /**
       * added once initiated mixins to return array
       */
-    function addOnceInitiated(mixin, params){
+    function addInitiatedOnce(mixin, params){
       mixin = mixin.apply(this, params || []);
         rtn.push(mixin);
       }
 
       for (var m in mixins){
         if (mixins.hasOwnProperty(m)){
-          addOnceInitiated(React.mixins._mixins[m], mixins[m]);
+          addInitiatedOnce(React.mixins._mixins[m], mixins[m]);
         }
       }
   }
@@ -146,7 +146,7 @@
     return _createClass.apply(React, arguments);
   };
 
-  function addMixin(name, mixin, depends, override, onceInitiated) {
+  function addMixin(name, mixin, depends, override, initiatedOnce) {
     var mixins = React.mixins;
     if (!override && mixins._mixins[name]) {
       return;
@@ -154,8 +154,8 @@
     mixins._dependsOn[name] = depends.length && depends;
     mixins._mixins[name] = mixin;
 
-    if (onceInitiated){
-      mixins._onceInitiated[name] = true;
+    if (initiatedOnce){
+      mixins._initiatedOnce[name] = true;
     }
   }
 
@@ -166,11 +166,11 @@
   function mixinParams(args, override) {
     var name,
         options = args[0],
-        onceInitiated = false;
+        initiatedOnce = false;
 
     if (typeof(options) === 'object'){
       name = options.name;
-      onceInitiated = options.onceInitiated;
+      initiatedOnce = options.initiatedOnce;
     } else {
       name = options;
     }
@@ -180,9 +180,9 @@
     }
 
     if (Array.isArray(args[1])) {
-      return [name, args[1][0], Array.prototype.slice.call(args[1], 1), override, onceInitiated];
+      return [name, args[1][0], Array.prototype.slice.call(args[1], 1), override, initiatedOnce];
     } else {
-      return [name, args[1], Array.prototype.slice.call(args, 2), override, onceInitiated]
+      return [name, args[1], Array.prototype.slice.call(args, 2), override, initiatedOnce]
     }
   }
 
@@ -198,10 +198,10 @@
     get: function() {
       var rtn = [],
           index = {},
-          onceInitiated = {};
+          initiatedOnce = {};
 
-      get(Array.prototype.slice.call(arguments), index, onceInitiated, rtn);
-      getOnceInitiated(onceInitiated, rtn);
+      get(Array.prototype.slice.call(arguments), index, initiatedOnce, rtn);
+      getInitiatedOnce(initiatedOnce, rtn);
       return rtn;
     },
 
@@ -237,7 +237,7 @@
     _dependsOn: {},
     _dependsInjected: {},
     _mixins: {},
-    _onceInitiated: {}
+    _initiatedOnce: {}
   };
 
   /**
