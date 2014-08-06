@@ -25,8 +25,8 @@ API
 
 ### React.mixins
 
-#### add(mixinParams, mixin[, dependsOn, dependsOn, ...])
-* ***mixinParams***: (object or string) the alias to be used when including the mixin for a React component
+#### add(options, mixin[, dependsOn, dependsOn, ...])
+* ***options***: (object or string) the alias to be used when including the mixin for a React component
 * ***mixin***: the mixin object
 * ***dependsOn***: (string or array) the alias of another mixin that must be included if this mixin is included
 

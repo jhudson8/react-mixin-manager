@@ -164,21 +164,25 @@
   }
 
   function mixinParams(args, override) {
-    var mixinName,
-        mixinParams = args[0],
+    var name,
+        options = args[0],
         onceInitiated = false;
 
-    if (typeof(mixinParams) === 'object'){
-      mixinName = mixinParams.name;
-      onceInitiated = mixinParams.onceInitiated;
+    if (typeof(options) === 'object'){
+      name = options.name;
+      onceInitiated = options.onceInitiated;
     } else {
-      mixinName = mixinParams;
+      name = options;
+    }
+
+    if (!name || !name.length){
+        throw new Error('the mixin name hasn\'t been specified');
     }
 
     if (Array.isArray(args[1])) {
-      return [mixinName, args[1][0], Array.prototype.slice.call(args[1], 1), override, onceInitiated];
+      return [name, args[1][0], Array.prototype.slice.call(args[1], 1), override, onceInitiated];
     } else {
-      return [mixinName, args[1], Array.prototype.slice.call(args, 2), override, onceInitiated]
+      return [name, args[1], Array.prototype.slice.call(args, 2), override, onceInitiated]
     }
   }
 
@@ -218,11 +222,11 @@
       addMixin(name, GROUP, Array.prototype.slice.call(arguments, 1), false);
     },
 
-    add: function(params, mixin) {
+    add: function(options, mixin) {
       addMixin.apply(this, mixinParams(arguments, false));
     },
 
-    replace: function(name, mixin) {
+    replace: function(options, mixin) {
       addMixin.apply(this, mixinParams(arguments, true));
     },
 

@@ -116,4 +116,11 @@ describe('react-mixin-dependencies', function() {
     var rtn = React.mixins.get('p("foo")', 'p("bar")');
     expect(rtn).to.eql([mixin1, {param1: 'foo', param2: 'bar'}]);
   });
+
+  it('should support replace for once initiated mixins', function() {
+     React.mixins.add({name: 'p', onceInitiated: true}, mixin1);
+     React.mixins.replace({name: 'p', onceInitiated: true}, mixinWithParams);
+     var rtn = React.mixins.get('p("foo")', 'p("bar")');
+     expect(rtn).to.eql([{param1: 'foo', param2: 'bar'}]);
+  });
 });
