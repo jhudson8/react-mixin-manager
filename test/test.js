@@ -19,6 +19,7 @@ describe('react-mixin-dependencies', function() {
     React.mixins._dependsOn = {};
     React.mixins._mixins = {};
     React.mixins._dependsInjected = {};
+    React.mixins._onceInitiated = {};
   });
 
   it('should return standard mixins', function() {
@@ -104,14 +105,14 @@ describe('react-mixin-dependencies', function() {
   });
 
   it('should support once initiated mixins', function() {
-    React.mixins.addOnceInitiated('p', mixinWithParams);
+    React.mixins.add({name: 'p', onceInitiated: true}, mixinWithParams);
     var rtn = React.mixins.get('p("foo")', 'p("bar")');
     expect(rtn).to.eql([{param1: 'foo', param2: 'bar'}]);
   });
 
   it('should support dependencies for once initiated mixins', function() {
     React.mixins.add('mixin1', mixin1);
-    React.mixins.addOnceInitiated('p', mixinWithParams, 'mixin1');
+    React.mixins.add({name: 'p', onceInitiated: true}, mixinWithParams, 'mixin1');
     var rtn = React.mixins.get('p("foo")', 'p("bar")');
     expect(rtn).to.eql([mixin1, {param1: 'foo', param2: 'bar'}]);
   });

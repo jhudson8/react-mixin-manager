@@ -163,11 +163,22 @@
     // empty function which is used only as a placeholder to list dependencies
   }
 
-  function mixinParams(args, override, onceInitiated) {
-    if (Array.isArray(args[1])) {
-      return [args[0], args[1][0], Array.prototype.slice.call(args[1], 1), override, onceInitiated];
+  function mixinParams(args, override) {
+    var mixinName,
+        mixinParams = args[0],
+        onceInitiated = false;
+
+    if (typeof(mixinParams) === 'object'){
+      mixinName = mixinParams.name;
+      onceInitiated = mixinParams.onceInitiated;
     } else {
-      return [args[0], args[1], Array.prototype.slice.call(args, 2), override, onceInitiated]
+      mixinName = mixinParams;
+    }
+
+    if (Array.isArray(args[1])) {
+      return [mixinName, args[1][0], Array.prototype.slice.call(args[1], 1), override, onceInitiated];
+    } else {
+      return [mixinName, args[1], Array.prototype.slice.call(args, 2), override, onceInitiated]
     }
   }
 
@@ -207,12 +218,8 @@
       addMixin(name, GROUP, Array.prototype.slice.call(arguments, 1), false);
     },
 
-    add: function(name, mixin) {
+    add: function(params, mixin) {
       addMixin.apply(this, mixinParams(arguments, false));
-    },
-
-    addOnceInitiated: function(name, mixin){
-      addMixin.apply(this, mixinParams(arguments, false, true));
     },
 
     replace: function(name, mixin) {
