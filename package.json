@@ -12,10 +12,11 @@
     "mixin"
   ],
   "devDependencies": {
-    "react": "*",
     "chai": "*",
     "mocha": "*",
-    "uglify-js": "*"
+    "react": "*",
+    "uglify-js": "*",
+    "underscore": "^1.6.0"
   },
   "license": "MIT"
 }

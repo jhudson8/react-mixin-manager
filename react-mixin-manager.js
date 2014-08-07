@@ -66,7 +66,8 @@
         if (mixin) {
           if (typeof mixin === 'function') {
             if (React.mixins._initiatedOnce[name]){
-              initiatedOnce[name] = (initiatedOnce[name] || []).concat(params);
+              initiatedOnce[name] = (initiatedOnce[name] || []);
+              initiatedOnce[name].push(params);
               skip = true;
             } else {
               mixin = mixin.apply(this, params || []);

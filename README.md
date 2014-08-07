@@ -71,7 +71,14 @@ React.mixins.add({name: 'myMixin', initiatedOnce: true}, myMixinImpl);
 React.createClass({
   mixins: ['myMixin("foo")', 'myMixin("bar")', anyOtherPlainOldMixin]
 })
-// myMixinImpl("foo", "bar"), anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times).
+// myMixinImpl(["foo"], ["bar"]), anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times).
+// myMixin will be initiated once with all parameters which were provided to.
+
+...
+React.createClass({
+  mixins: ['myMixin("foo", "test")', 'myMixin("bar")', anyOtherPlainOldMixin]
+})
+// myMixinImpl(["foo", "test"], ["bar"]), anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times).
 // myMixin will be initiated once with all parameters which were provided to.
 
 
@@ -84,7 +91,28 @@ React.mixins.add('myMixin', myMixinImpl, 'initiatedOnceMixin("foo")');
 ...
 React.createClass({
   mixins: ['initiatedOnceMixin("bar")', 'myMixin', anyOtherPlainOldMixin]
-  // myMixinImpl, initiatedOnceMixinImpl("bar", "foo"), anyOtherPlainOldMixin will be included
+  // myMixinImpl, initiatedOnceMixinImpl(["bar"], ["foo"]), anyOtherPlainOldMixin will be included
+});
+
+
+// 3. process the parameters
+
+var _ = require('underscore');
+
+// we have initiatedOnceMixinImpl that requires arguments as a flatten array
+// create wrapper that will process arguments
+var wrappedMixinImpl = function(){
+  var params = Array.prototype.slice.call(arguments, 0);
+  var flattenParams = _.flatten(params);
+
+  return initiatedOnceMixinImpl.apply(this, flattenParams);
+};
+// register wrappedMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
+React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, wrappedMixinImpl);
+...
+React.createClass({
+  mixins: ['initiatedOnceMixin("foo", "test")', 'initiatedOnceMixin("bar")', anyOtherPlainOldMixin]
+  // initiatedOnceMixinImpl("foo", "test", "bar"), anyOtherPlainOldMixin will be included
 });
 ```
 
