@@ -17,7 +17,7 @@ React.createClass({
 })
 ```
 
-[View react-mixin-manager fancydocs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-mixin-manager) (courtesy of https://github.com/jhudson8/fancydocs)
+***[View react-mixin-manager fancydocs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-mixin-manager) (courtesy of https://github.com/jhudson8/fancydocs)***
 
 
 API
