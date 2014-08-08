@@ -2,7 +2,12 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.6.1...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.7.0...master)
+
+## v0.7.0 - August 8th, 2014
+- [#1](https://github.com/jhudson8/react-mixin-manager/pull/1) - Once initiated mixins support. ([@anatolikurtsevich](https://api.github.com/users/anatolikurtsevich))
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.6.1...v0.7.0)
 
 ## v0.6.1 - July 19th, 2014
 - bug fix: include dependencies when mixin parameters are used - ec68956
