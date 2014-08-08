@@ -25,8 +25,10 @@ API
 
 ### React.mixins
 
-#### add(mixinName, mixin[, dependsOn, dependsOn, ...])
+#### add (mixinName, mixin[, dependsOn, dependsOn, ...]) or (options, mixin[, dependsOn, dependsOn, ...])
 * ***mixinName***: (string) the alias to be used when including the mixin for a React component
+* ***options***: (object) {mixinName (required), initiatedOnce (optional)}
+* ***initiatedOnce***: (boolean) defines how parameterized mixins are executed;  see "Mixins With Parameters" for more details
 * ***mixin***: the mixin object
 * ***dependsOn***: (string or array) the alias of another mixin that must be included if this mixin is included
 
@@ -57,11 +59,71 @@ React.createClass({
   mixins: ['mixin2', anyOtherPlainOldMixin]
 })
 ```
+
+*Mixin with parameters*
+```
+
+// 1. simple example
+
+// register myMixinImpl as the alias "myMixin" and pass initiatedOnce parameter as true
+React.mixins.add({name: 'myMixin', initiatedOnce: true}, myMixinImpl);
+...
+React.createClass({
+  mixins: ['myMixin("foo")', 'myMixin("bar")', anyOtherPlainOldMixin]
+})
+// myMixinImpl(["foo"], ["bar"]), anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times).
+// myMixin will be initiated once with all parameters which were provided to.
+
+...
+React.createClass({
+  mixins: ['myMixin("foo", "test")', 'myMixin("bar")', anyOtherPlainOldMixin]
+})
+// myMixinImpl(["foo", "test"], ["bar"]), anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times).
+// myMixin will be initiated once with all parameters which were provided to.
+
+
+// 2. more difficult use case
+
+// register initiatedOnceMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
+React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, initiatedOnceMixinImpl);
+// register another mixin which has "InitiatedOnceMixin" with some parameters as dependency
+React.mixins.add('myMixin', myMixinImpl, 'initiatedOnceMixin("foo")');
+...
+React.createClass({
+  mixins: ['initiatedOnceMixin("bar")', 'myMixin', anyOtherPlainOldMixin]
+  // myMixinImpl, initiatedOnceMixinImpl(["bar"], ["foo"]), anyOtherPlainOldMixin will be included
+});
+
+
+// 3. process the parameters
+
+var _ = require('underscore');
+
+// we have initiatedOnceMixinImpl that requires arguments as a flatten array
+// create wrapper that will process arguments
+var wrappedMixinImpl = function(){
+  var params = Array.prototype.slice.call(arguments, 0);
+  var flattenParams = _.flatten(params);
+
+  return initiatedOnceMixinImpl.apply(this, flattenParams);
+};
+// register wrappedMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
+React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, wrappedMixinImpl);
+...
+React.createClass({
+  mixins: ['initiatedOnceMixin("foo", "test")', 'initiatedOnceMixin("bar")', anyOtherPlainOldMixin]
+  // initiatedOnceMixinImpl("foo", "test", "bar"), anyOtherPlainOldMixin will be included
+});
+```
+
 ***note***: if the registered mixin is a function, it will be executed and the return value will be used as the mixin
 
 
-#### replace(mixinName, mixin[, dependsOn, dependsOn, ...])
+
+#### replace (mixinName, mixin[, dependsOn, dependsOn, ...]) or (options, mixin[, dependsOn, dependsOn, ...])
 * ***mixinName***: (string) the alias to be used when including the mixin for a React component
+* ***options***: (object) {mixinName (required), initiatedOnce (optional)}
+* ***initiatedOnce***: (boolean) defines how parameterized mixins are executed;  see "Mixins With Parameters" for more details
 * ***mixin***: the mixin object
 * ***dependsOn***: (string or array) the alias of another mixin that must be included if this mixin is included
 

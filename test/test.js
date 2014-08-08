@@ -1,6 +1,7 @@
 var chai = require('chai'),
     React = require('react'),
     expect = chai.expect,
+    _ = require('underscore'),
     mixin1 = {mixin1: true},
     mixin2 = {mixin2: true},
     mixin3 = {mixin3: true},
@@ -19,6 +20,7 @@ describe('react-mixin-dependencies', function() {
     React.mixins._dependsOn = {};
     React.mixins._mixins = {};
     React.mixins._dependsInjected = {};
+    React.mixins._onceInitiated = {};
   });
 
   it('should return standard mixins', function() {
@@ -101,5 +103,36 @@ describe('react-mixin-dependencies', function() {
     React.mixins.add('p', mixinWithParams, '1');
     var rtn = React.mixins.get('p("foo")');
     expect(rtn).to.eql([mixin1, {param1: 'foo', param2: undefined}]);
+  });
+
+  it('should support once initiated mixins', function() {
+    React.mixins.add({name: 'p', initiatedOnce: true}, mixinWithParams);
+    var rtn = React.mixins.get('p("foo")', 'p("bar")');
+    expect(rtn).to.eql([{param1: ['foo'], param2: ['bar']}]);
+  });
+
+  it('should support dependencies for once initiated mixins', function() {
+    React.mixins.add('mixin1', mixin1);
+    React.mixins.add({name: 'p', initiatedOnce: true}, mixinWithParams, 'mixin1');
+    var rtn = React.mixins.get('p("foo")', 'p("bar")');
+    expect(rtn).to.eql([mixin1, {param1: ['foo'], param2: ['bar']}]);
+  });
+
+  it('should support replace for once initiated mixins', function() {
+     React.mixins.add({name: 'p', initiatedOnce: true}, mixin1);
+     React.mixins.replace({name: 'p', initiatedOnce: true}, mixinWithParams);
+     var rtn = React.mixins.get('p("foo", "test")', 'p("bar")');
+     expect(rtn).to.eql([{param1: ['foo', 'test'], param2: ['bar']}]);
+  });
+
+  it('should flatten the arguments for once initiated mixin', function() {
+     var wrappedMixinImpl = function() {
+       var params = Array.prototype.slice.call(arguments, 0);
+       var flattenParams = _.flatten(params);
+       return mixinWithParams.apply(this, flattenParams);
+     };
+     React.mixins.replace({name: 'p', initiatedOnce: true}, wrappedMixinImpl);
+     var rtn = React.mixins.get('p("foo")', 'p("bar")');
+     expect(rtn).to.eql([{param1: 'foo', param2: 'bar'}]);
   });
 });
