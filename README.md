@@ -80,41 +80,9 @@ React.createClass({
 })
 // myMixinImpl(["foo", "test"], ["bar"]), anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times).
 // myMixin will be initiated once with all parameters which were provided to.
-
-
-// 2. more difficult use case
-
-// register initiatedOnceMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
-React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, initiatedOnceMixinImpl);
-// register another mixin which has "InitiatedOnceMixin" with some parameters as dependency
-React.mixins.add('myMixin', myMixinImpl, 'initiatedOnceMixin("foo")');
-...
-React.createClass({
-  mixins: ['initiatedOnceMixin("bar")', 'myMixin', anyOtherPlainOldMixin]
-  // myMixinImpl, initiatedOnceMixinImpl(["bar"], ["foo"]), anyOtherPlainOldMixin will be included
-});
-
-
-// 3. process the parameters
-
-var _ = require('underscore');
-
-// we have initiatedOnceMixinImpl that requires arguments as a flatten array
-// create wrapper that will process arguments
-var wrappedMixinImpl = function(){
-  var params = Array.prototype.slice.call(arguments, 0);
-  var flattenParams = _.flatten(params);
-
-  return initiatedOnceMixinImpl.apply(this, flattenParams);
-};
-// register wrappedMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
-React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, wrappedMixinImpl);
-...
-React.createClass({
-  mixins: ['initiatedOnceMixin("foo", "test")', 'initiatedOnceMixin("bar")', anyOtherPlainOldMixin]
-  // initiatedOnceMixinImpl("foo", "test", "bar"), anyOtherPlainOldMixin will be included
-});
 ```
+
+See "Mixins with Parameters" for advanced features
 
 ***note***: if the registered mixin is a function, it will be executed and the return value will be used as the mixin
 
@@ -251,3 +219,34 @@ var myComponent = React.createClass({
 In this example, when *myComponent* is declared (not instantiated), based on the *something* variable provided by the React component using the mixin, either *mixin1* or *mixin2* will be applied.
 
 *note: booleans and numbers can be used as well so make sure to wrap strings with quotes*
+
+
+The ***initiatedOnce*** option can be used when registering a mixin to ensure that the mixin is only called a single time regardless of how many parameterized references of that mixin there are for a React class.  In this case, the mixin function will accept a single parameter which is an array of argument arrays representing each parameterized mixin reference.
+
+```
+// register initiatedOnceMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
+React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, initiatedOnceMixinImpl);
+
+// register another mixin which has "InitiatedOnceMixin" with some parameters as dependency
+React.mixins.add('myMixin', myMixinImpl, 'initiatedOnceMixin("foo", "fee")');
+...
+React.createClass({
+  mixins: ['initiatedOnceMixin("bar")', 'myMixin', anyOtherPlainOldMixin]
+  // myMixinImpl, initiatedOnceMixinImpl(["bar"], ["foo"]), anyOtherPlainOldMixin will be included
+});
+```
+
+In the above case, if the mixin function were to log the parameters it received
+```
+React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, function(args) {
+  console.log(JSON.stringify(args));
+});
+```
+
+The output would look like
+```
+[["foo","fee"],["bar"]]
+
+// ["foo", "fee"] from the mixin dependency reference
+// ["bar"] from the react class mixin reference
+```
