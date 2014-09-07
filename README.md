@@ -60,31 +60,9 @@ React.createClass({
 })
 ```
 
-*Mixin with parameters*
-```
-
-// 1. simple example
-
-// register myMixinImpl as the alias "myMixin" and pass initiatedOnce parameter as true
-React.mixins.add({name: 'myMixin', initiatedOnce: true}, myMixinImpl);
-...
-React.createClass({
-  mixins: ['myMixin("foo")', 'myMixin("bar")', anyOtherPlainOldMixin]
-})
-// myMixinImpl(["foo"], ["bar"]), anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times).
-// myMixin will be initiated once with all parameters which were provided to.
-
-...
-React.createClass({
-  mixins: ['myMixin("foo", "test")', 'myMixin("bar")', anyOtherPlainOldMixin]
-})
-// myMixinImpl(["foo", "test"], ["bar"]), anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times).
-// myMixin will be initiated once with all parameters which were provided to.
-```
+***note***: if the registered mixin is a function, it will be executed and the return value will be used as the mixin
 
 See "Mixins with Parameters" for advanced features
-
-***note***: if the registered mixin is a function, it will be executed and the return value will be used as the mixin
 
 
 
