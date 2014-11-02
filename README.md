@@ -2,22 +2,130 @@ react-mixin-manager
 ========================
 Enhance React with full-featured mixin dependency management.
 
-* Mixins can be registered by a simple alias
-* Mixins can depend on other mixins to reduce DRY and create more granular mixins
-* Third party mixins can be overridden to increase flexibility
+* Register mixins using a string alias
+* Allow mixins to depend on other mixins
 * Reduce the chance of mixin attribute duplication
-
-```
-// register a mixin to an alias
-React.mixins.add('the-alias', myMixin);
-
-// reference the alias when creating a component
-React.createClass({
-  mixins: ['the-alias']
-})
-```
+* Provide dynamic mixins using reference parameters
 
 [View the fancydocs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-mixin-manager)
+
+
+Sections
+---------------
+
+### Installation
+* Browser: include *react-mixin-manager[.min].js* after [React](http://facebook.github.io/react/)
+* CommonJS: ```require('react-mixin-manager')(require('react'));```
+
+### Projects using react-mixin-manager
+* [npm](https://www.npmjs.org/browse/keyword/react-mixin-manager)
+* [bower](http://bower.io/search/?q=react-mixin-manager)
+
+add "react-mixin-manager" keyword to your project to be included in this list
+
+### Common Examples
+Include a mixin registered with react-mixin-manager to your component class
+```
+React.createClass({
+  mixins: ['mixinAlias']
+});
+```
+
+Register a mixin as an alias
+```
+React.mixins.add('mixinAlias', myMixin);
+```
+
+Register a mixin dependency
+```
+// "dependantMixin" will be included whenever "mixinAlias" is included on a component
+React.mixins.add('mixinAlias', myMixin, 'dependantMixin');
+```
+
+Include a mixin with parameters to your component (see Advanced Features for more details)
+```
+React.createClass({
+  // the parameters to the mixin are "param 1" and "param 2"
+  mixins: ['mixin alias("param 1", "param 2")']
+});
+```
+
+
+### Advanced Features
+
+#### Dynamic Mixins
+
+If the mixin that is registered is a function, the result of that function will be used as the actual mixin provided to the React component.  This can be useful if runtime conditions need to be evaluated to determine what should be exposed to the component.
+
+```
+React.mixins.add('myMixin', function() {
+  if (window.something) {
+    return mixin1;
+  } else {
+    return mixin2;
+  }
+});
+...
+var myComponent = React.createClass({
+  mixins: ['myMixin'],
+  ...
+});
+```
+In this example, when *myComponent* is declared (not instantiated), based on the *something* global variable, either *mixin1* or *mixin2* will be applied.
+
+
+#### Mixins With Parameters
+
+It is occasionally useful to add dynamic behavior to the mixin that is not based on some property set by the parent but rather a property that is internally defined by the component being instantiated.  This can be done by using *Dynamic Mixins* (see above).  When a function is used to return the mixin, any parameters supplied when referencing the mixin will supplied as arguments.
+
+```
+React.mixins.add('myMixin', function(something) {
+  if (something) {
+    return mixin1;
+  } else {
+    return mixin2;
+  }
+});
+...
+var myComponent = React.createClass({
+  mixins: ['myMixin("foo")'],
+  ...
+});
+```
+In this example, when *myComponent* is declared (not instantiated), based on the *something* variable provided by the React component using the mixin, either *mixin1* or *mixin2* will be applied.
+
+*note: booleans and numbers can be used as well so make sure to wrap strings with quotes*
+
+
+The ***initiatedOnce*** option can be used when registering a mixin to ensure that the mixin is only called a single time regardless of how many parameterized references of that mixin there are for a React class.  In this case, the mixin function will accept a single parameter which is an array of argument arrays representing each parameterized mixin reference.
+
+```
+// register initiatedOnceMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
+React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, initiatedOnceMixinImpl);
+
+// register another mixin which has "InitiatedOnceMixin" with some parameters as dependency
+React.mixins.add('myMixin', myMixinImpl, 'initiatedOnceMixin("foo", "fee")');
+...
+React.createClass({
+  mixins: ['initiatedOnceMixin("bar")', 'myMixin', anyOtherPlainOldMixin]
+  // myMixinImpl, initiatedOnceMixinImpl(["bar"], ["foo"]), anyOtherPlainOldMixin will be included
+});
+```
+
+In the above case, if the mixin function were to log the parameters it received
+```
+React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, function(args) {
+  console.log(JSON.stringify(args));
+});
+```
+
+The output would look like
+```
+[["foo","fee"],["bar"]]
+
+// ["foo", "fee"] from the mixin dependency reference
+// ["bar"] from the react class mixin reference
+```
 
 
 API
@@ -142,89 +250,4 @@ React.createClass({
     this.deferUpdate();
   }
 });
-```
-
-
-Sections
----------------
-
-### Installation
-* Browser: include *react-mixin-manager[.min].js* after [React](http://facebook.github.io/react/)
-* CommonJS: ```require('react-mixin-manager')(require('react'));```
-
-
-### Advanced Features
-
-#### Dynamic Mixins
-
-If the mixin that is registered is a function, the result of that function will be used as the actual mixin provided to the React component.  This can be useful if runtime conditions need to be evaluated to determine what should be exposed to the component.
-
-```
-React.mixins.add('myMixin', function() {
-  if (window.something) {
-    return mixin1;
-  } else {
-    return mixin2;
-  }
-});
-...
-var myComponent = React.createClass({
-  mixins: ['myMixin'],
-  ...
-});
-```
-In this example, when *myComponent* is declared (not instantiated), based on the *something* global variable, either *mixin1* or *mixin2* will be applied.
-
-
-#### Mixins With Parameters
-
-It is occasionally useful to add dynamic behavior to the mixin that is not based on some property set by the parent but rather a property that is internally defined by the component being instantiated.  This can be done by using *Dynamic Mixins* (see above).  When a function is used to return the mixin, any parameters supplied when referencing the mixin will supplied as arguments.
-
-```
-React.mixins.add('myMixin', function(something) {
-  if (something) {
-    return mixin1;
-  } else {
-    return mixin2;
-  }
-});
-...
-var myComponent = React.createClass({
-  mixins: ['myMixin("foo")'],
-  ...
-});
-```
-In this example, when *myComponent* is declared (not instantiated), based on the *something* variable provided by the React component using the mixin, either *mixin1* or *mixin2* will be applied.
-
-*note: booleans and numbers can be used as well so make sure to wrap strings with quotes*
-
-
-The ***initiatedOnce*** option can be used when registering a mixin to ensure that the mixin is only called a single time regardless of how many parameterized references of that mixin there are for a React class.  In this case, the mixin function will accept a single parameter which is an array of argument arrays representing each parameterized mixin reference.
-
-```
-// register initiatedOnceMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
-React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, initiatedOnceMixinImpl);
-
-// register another mixin which has "InitiatedOnceMixin" with some parameters as dependency
-React.mixins.add('myMixin', myMixinImpl, 'initiatedOnceMixin("foo", "fee")');
-...
-React.createClass({
-  mixins: ['initiatedOnceMixin("bar")', 'myMixin', anyOtherPlainOldMixin]
-  // myMixinImpl, initiatedOnceMixinImpl(["bar"], ["foo"]), anyOtherPlainOldMixin will be included
-});
-```
-
-In the above case, if the mixin function were to log the parameters it received
-```
-React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, function(args) {
-  console.log(JSON.stringify(args));
-});
-```
-
-The output would look like
-```
-[["foo","fee"],["bar"]]
-
-// ["foo", "fee"] from the mixin dependency reference
-// ["bar"] from the react class mixin reference
 ```
