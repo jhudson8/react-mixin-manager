@@ -2,7 +2,12 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.7.1...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.8.0...master)
+
+## v0.8.0 - November 11th, 2014
+- add "state" mixin - 4c00d185
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.7.1...v0.7.2)
 
 ## v0.7.1 - September 7th, 2014
 - add react-component keyword - bcdeeb9
