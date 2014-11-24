@@ -35,6 +35,31 @@
   }
 })(function(React) {
 
+  function setState(state, context) {
+    if (context.isMounted()) {
+      context.setState(state);
+    } else if (context.state) {
+      for (var name in state) {
+        context.state[name] = state[name];
+      }
+    } else {
+      // if we aren't mounted, we will get an exception if we try to set the state
+      // so keep a placeholder state until we're mounted
+      // this is mainly useful if setModel is called on getInitialState
+      var _state = context.__temporary_state || {};
+      for (var name in state) {
+        _state[name] = state[name];
+      }
+      context.__temporary_state = _state;
+    }
+  }
+
+  function getState(key, context) {
+    var state = context.state,
+      initState = context.__temporary_state;
+    return (state && state[key]) || (initState && initState[key]);
+  }
+
   /**
    * return the normalized mixin list
    * @param values {Array} list of mixin entries
@@ -43,7 +68,6 @@
    * @param rtn {Array} the normalized return array
    */
   function get(values, index, initiatedOnce, rtn) {
-
     /**
      * add the named mixin and all un-added dependencies to the return array
      * @param the mixin name
@@ -275,7 +299,23 @@
   React.mixins.add('state', {
     getInitialState: function() {
       return {};
+    },
+
+    componentWillMount: function() {
+      // not directly related to this mixin but all of these mixins have this as a dependency
+      // if setState was called before the component was mounted, the actual component state was
+      // not set because it might not exist.  Convert the pretend state to the real thing
+      // (but don't trigger a render)
+      var _state = this.__temporary_state;
+      if (_state) {
+        for (var key in _state) {
+          this.state[key] = _state[key];
+        }
+        delete this.__temporary_state;
+      }
     }
   });
+  React.mixins.setState = setState;
+  React.mixins.getState = getState;
 
 });

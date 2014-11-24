@@ -1,19 +1,55 @@
 var chai = require('chai'),
-    React = require('react'),
-    expect = chai.expect,
-    _ = require('underscore'),
-    mixin1 = {mixin1: true},
-    mixin2 = {mixin2: true},
-    mixin3 = {mixin3: true},
-    mixin4 = {mixin4: true},
-    mixinWithParams = function(param1, param2) {
-      return {
-        param1: param1,
-        param2: param2
-      };
+  React = require('react'),
+  expect = chai.expect,
+  _ = require('underscore'),
+  mixin1 = {
+    mixin1: true
+  },
+  mixin2 = {
+    mixin2: true
+  },
+  mixin3 = {
+    mixin3: true
+  },
+  mixin4 = {
+    mixin4: true
+  },
+  mixinWithParams = function(param1, param2) {
+    return {
+      param1: param1,
+      param2: param2
     };
+  };
+
+var jsdom = require('jsdom');
+ 
+// move into beforeEach and flip global.window.close on to improve
+// cleaning of environment during each test and prevent memory leaks
+document = jsdom.jsdom('<html><body><div id="test"></div></body></html>', jsdom.level(1, 'core'));
+window = document.parentWindow;
 
 require('../index')(React);
+
+describe('#getState / #setState', function(done) {
+  it('should get and state before component is initialized', function(done) {
+    var childMixin = {
+      getInitialState: function() {
+        React.mixins.setState({foo: 'bar'}, this);
+        expect(this.__temporary_state.foo).to.eql('bar');
+        return null;
+      }
+    };
+    var Component = React.createClass({
+      mixins: ['state', childMixin],
+      render: function() {
+        expect(this.state.foo).to.eql('bar');
+        done();
+        return React.createElement('div');
+      }
+    });
+    React.render(new Component(), document.getElementById('test'));
+  })
+});
 
 describe('react-mixin-dependencies', function() {
   beforeEach(function() {
@@ -91,48 +127,84 @@ describe('react-mixin-dependencies', function() {
   it('should support parameters in mixin references', function() {
     React.mixins.add('p', mixinWithParams);
     var rtn = React.mixins.get('p("foo")');
-    expect(rtn).to.eql([{param1: 'foo', param2: undefined}]);
+    expect(rtn).to.eql([{
+      param1: 'foo',
+      param2: undefined
+    }]);
 
     // multiple parameters should be supported as well - all will be converted to strings (and spaces will exist in the arguments)
     rtn = React.mixins.get('p("foo","bar")');
-    expect(rtn).to.eql([{param1: 'foo', param2: 'bar'}]);
+    expect(rtn).to.eql([{
+      param1: 'foo',
+      param2: 'bar'
+    }]);
   });
 
   it('should include dependencies with parameters references', function() {
     React.mixins.add('1', mixin1);
     React.mixins.add('p', mixinWithParams, '1');
     var rtn = React.mixins.get('p("foo")');
-    expect(rtn).to.eql([mixin1, {param1: 'foo', param2: undefined}]);
+    expect(rtn).to.eql([mixin1, {
+      param1: 'foo',
+      param2: undefined
+    }]);
   });
 
   it('should support once initiated mixins', function() {
-    React.mixins.add({name: 'p', initiatedOnce: true}, mixinWithParams);
+    React.mixins.add({
+      name: 'p',
+      initiatedOnce: true
+    }, mixinWithParams);
     var rtn = React.mixins.get('p("foo")', 'p("bar")');
-    expect(rtn).to.eql([{param1: ['foo'], param2: ['bar']}]);
+    expect(rtn).to.eql([{
+      param1: ['foo'],
+      param2: ['bar']
+    }]);
   });
 
   it('should support dependencies for once initiated mixins', function() {
     React.mixins.add('mixin1', mixin1);
-    React.mixins.add({name: 'p', initiatedOnce: true}, mixinWithParams, 'mixin1');
+    React.mixins.add({
+      name: 'p',
+      initiatedOnce: true
+    }, mixinWithParams, 'mixin1');
     var rtn = React.mixins.get('p("foo")', 'p("bar")');
-    expect(rtn).to.eql([mixin1, {param1: ['foo'], param2: ['bar']}]);
+    expect(rtn).to.eql([mixin1, {
+      param1: ['foo'],
+      param2: ['bar']
+    }]);
   });
 
   it('should support replace for once initiated mixins', function() {
-     React.mixins.add({name: 'p', initiatedOnce: true}, mixin1);
-     React.mixins.replace({name: 'p', initiatedOnce: true}, mixinWithParams);
-     var rtn = React.mixins.get('p("foo", "test")', 'p("bar")');
-     expect(rtn).to.eql([{param1: ['foo', 'test'], param2: ['bar']}]);
+    React.mixins.add({
+      name: 'p',
+      initiatedOnce: true
+    }, mixin1);
+    React.mixins.replace({
+      name: 'p',
+      initiatedOnce: true
+    }, mixinWithParams);
+    var rtn = React.mixins.get('p("foo", "test")', 'p("bar")');
+    expect(rtn).to.eql([{
+      param1: ['foo', 'test'],
+      param2: ['bar']
+    }]);
   });
 
   it('should flatten the arguments for once initiated mixin', function() {
-     var wrappedMixinImpl = function() {
-       var params = Array.prototype.slice.call(arguments, 0);
-       var flattenParams = _.flatten(params);
-       return mixinWithParams.apply(this, flattenParams);
-     };
-     React.mixins.replace({name: 'p', initiatedOnce: true}, wrappedMixinImpl);
-     var rtn = React.mixins.get('p("foo")', 'p("bar")');
-     expect(rtn).to.eql([{param1: 'foo', param2: 'bar'}]);
+    var wrappedMixinImpl = function() {
+      var params = Array.prototype.slice.call(arguments, 0);
+      var flattenParams = _.flatten(params);
+      return mixinWithParams.apply(this, flattenParams);
+    };
+    React.mixins.replace({
+      name: 'p',
+      initiatedOnce: true
+    }, wrappedMixinImpl);
+    var rtn = React.mixins.get('p("foo")', 'p("bar")');
+    expect(rtn).to.eql([{
+      param1: 'foo',
+      param2: 'bar'
+    }]);
   });
 });
