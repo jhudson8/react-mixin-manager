@@ -23,7 +23,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- (function(main) {
+(function(main) {
   if (typeof define === 'function' && define.amd) {
     define(['react'], main);
   } else if (typeof exports !== 'undefined' && typeof require !== 'undefined') {
@@ -50,8 +50,8 @@
      */
     function addTo(name) {
       var indexName = name,
-          match = name.match(/^([^\(]*)\s*\(([^\)]*)\)\s*/),
-          params = match && match[2];
+        match = name.match(/^([^\(]*)\s*\(([^\)]*)\)\s*/),
+        params = match && match[2];
       name = match && match[1] || name;
 
       if (!index[indexName]) {
@@ -60,12 +60,12 @@
           params = eval('[' + params + ']');
         }
         var mixin = React.mixins._mixins[name],
-            checkAgain = false,
-            skip = false;
+          checkAgain = false,
+          skip = false;
 
         if (mixin) {
           if (typeof mixin === 'function') {
-            if (React.mixins._initiatedOnce[name]){
+            if (React.mixins._initiatedOnce[name]) {
               initiatedOnce[name] = (initiatedOnce[name] || []);
               initiatedOnce[name].push(params);
               skip = true;
@@ -108,7 +108,7 @@
     }
 
     if (Array.isArray(values)) {
-      for (var i=0; i<values.length; i++) {
+      for (var i = 0; i < values.length; i++) {
         handleMixin(values[i]);
       }
     } else {
@@ -124,18 +124,18 @@
   function getInitiatedOnce(mixins, rtn) {
 
     /**
-      * added once initiated mixins to return array
-      */
-    function addInitiatedOnce(mixin, params){
+     * added once initiated mixins to return array
+     */
+    function addInitiatedOnce(mixin, params) {
       mixin = mixin.apply(this, params || []);
-        rtn.push(mixin);
-      }
+      rtn.push(mixin);
+    }
 
-      for (var m in mixins){
-        if (mixins.hasOwnProperty(m)){
-          addInitiatedOnce(React.mixins._mixins[m], mixins[m]);
-        }
+    for (var m in mixins) {
+      if (mixins.hasOwnProperty(m)) {
+        addInitiatedOnce(React.mixins._mixins[m], mixins[m]);
       }
+    }
   }
 
   // allow for registered mixins to be extract just by using the standard React.createClass
@@ -155,7 +155,7 @@
     mixins._dependsOn[name] = depends.length && depends;
     mixins._mixins[name] = mixin;
 
-    if (initiatedOnce){
+    if (initiatedOnce) {
       mixins._initiatedOnce[name] = true;
     }
   }
@@ -166,18 +166,18 @@
 
   function mixinParams(args, override) {
     var name,
-        options = args[0],
-        initiatedOnce = false;
+      options = args[0],
+      initiatedOnce = false;
 
-    if (typeof(options) === 'object'){
+    if (typeof(options) === 'object') {
       name = options.name;
       initiatedOnce = options.initiatedOnce;
     } else {
       name = options;
     }
 
-    if (!name || !name.length){
-        throw new Error('the mixin name hasn\'t been specified');
+    if (!name || !name.length) {
+      throw new Error('the mixin name hasn\'t been specified');
     }
 
     if (Array.isArray(args[1])) {
@@ -198,8 +198,8 @@
      */
     get: function() {
       var rtn = [],
-          index = {},
-          initiatedOnce = {};
+        index = {},
+        initiatedOnce = {};
 
       get(Array.prototype.slice.call(arguments), index, initiatedOnce, rtn);
       getInitiatedOnce(initiatedOnce, rtn);
@@ -277,4 +277,5 @@
       return {};
     }
   });
+
 });
