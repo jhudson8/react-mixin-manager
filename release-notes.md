@@ -2,7 +2,13 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.8.0...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.0...master)
+
+## v0.9.0 - November 25th, 2014
+- add React.mixins.getState / React.mixins.setState methods - 42443d2
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.8.0...v0.9.0)
 
 ## v0.8.0 - November 11th, 2014
 - add "state" mixin - 4c00d185
