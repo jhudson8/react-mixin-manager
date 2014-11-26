@@ -36,9 +36,7 @@
   } else if (typeof exports !== 'undefined' && typeof require !== 'undefined') {
     // with CommonJS
     // require('react-mixin-manager')(require('react'));
-    module.exports = function(React) {
-      main(React);
-    };
+    module.exports = main;
   } else {
     main(React);
   }
