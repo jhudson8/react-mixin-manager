@@ -7,17 +7,7 @@ Enhance React with full-featured mixin dependency management.
 * Reduce the chance of mixin attribute duplication
 * Provide dynamic mixins using reference parameters
 
-[View the fancydocs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-mixin-manager)
-
-### Installation
-* Browser: include *react-mixin-manager[.min].js* after [React](http://facebook.github.io/react/)
-* CommonJS: ```require('react-mixin-manager')(require('react'));```
-
-### Projects using react-mixin-manager
-* [npm](https://www.npmjs.org/browse/keyword/react-mixin-manager)
-* [bower](http://bower.io/search/?q=react-mixin-manager)
-
-add "react-mixin-manager" keyword to your project to be included in this list
+[View the fancydocs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-mixin-manager) for a better docs experience
 
 ### Common Examples
 Include a mixin registered with react-mixin-manager to your component class
@@ -46,10 +36,34 @@ React.createClass({
 });
 ```
 
+Installation
+--------------
+Browser:
+```
+<script src=".../react-mixin-manager[-min].js"></script>
+```
+CommonJS
+```
+require('react-mixin-manager')(require('react'));
+```
+AMD
+```
+require(
+  ['react', react-mixin-manager'], function(React, reactMixinManager) {
+  reactMixinManager(React); 
+});
+```
+
+Projects using react-mixin-manager
+---------------
+* [npm](https://www.npmjs.org/browse/keyword/react-mixin-manager)
+* [bower](http://bower.io/search/?q=react-mixin-manager)
+
+add "react-mixin-manager" keyword to your project to be included in this list
+
 
 API
 ------------
-
 ### React.mixins
 
 #### add (mixinName, mixin[, dependsOn, dependsOn, ...]) or (options, mixin[, dependsOn, dependsOn, ...])

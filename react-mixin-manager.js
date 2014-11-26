@@ -25,8 +25,17 @@
  */
 (function(main) {
   if (typeof define === 'function' && define.amd) {
-    define(['react'], main);
+    define([], function() {
+      // with AMD
+      //  require(
+      //    ['react', react-mixin-manager'], function(React, reactMixinManager) {
+      //    reactMixinManager(React); 
+      //  });
+      return main;
+    });
   } else if (typeof exports !== 'undefined' && typeof require !== 'undefined') {
+    // with CommonJS
+    // require('react-mixin-manager')(require('react'));
     module.exports = function(React) {
       main(React);
     };
