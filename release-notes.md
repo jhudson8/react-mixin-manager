@@ -2,7 +2,19 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.0...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.1...master)
+
+## v0.9.1 - November 26th, 2014
+- for AMD, you must execute the function with params (see README AMD install instructions) - 37c72bb
+```
+require(
+  ['react', react-mixin-manager'], function(React, reactMixinManager) {
+  reactMixinManager(React); 
+});
+```
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.0...v0.9.1)
 
 ## v0.9.0 - November 25th, 2014
 - add React.mixins.getState / React.mixins.setState methods - 42443d2
