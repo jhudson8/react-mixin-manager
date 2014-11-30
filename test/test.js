@@ -53,10 +53,7 @@ describe('#getState / #setState', function(done) {
 
 describe('react-mixin-dependencies', function() {
   beforeEach(function() {
-    React.mixins._dependsOn = {};
-    React.mixins._mixins = {};
-    React.mixins._dependsInjected = {};
-    React.mixins._onceInitiated = {};
+    React.mixins._reset();
   });
 
   it('should return standard mixins', function() {
@@ -206,5 +203,25 @@ describe('react-mixin-dependencies', function() {
       param1: 'foo',
       param2: 'bar'
     }]);
+  });
+
+  it('should add "mixins" attribute as dependencies from a provided mixin', function() {
+    React.mixins.add('1', mixin1);
+    React.mixins.add('2', mixin2);
+    var testMixin = {
+      mixins: ['1'],
+      foo: 'bar'
+    };
+    var rtn = React.mixins.get('2', testMixin);
+    expect(rtn.length).to.eql(3);
+    expect(rtn[0]).to.eql(mixin2);
+    expect(rtn[1]).to.eql(mixin1);
+    // the mixin should be cloned so the mixins attribute can be removed
+    expect(rtn[2]).to.not.eql(testMixin);
+    expect(rtn[2]).to.eql({foo: 'bar'});
+    var cached = rtn[2];
+    // make sure the copied mixin was cached
+    rtn = React.mixins.get('2', testMixin);
+    expect(rtn[2] === cached).to.eql(true);
   });
 });

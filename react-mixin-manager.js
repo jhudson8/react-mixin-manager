@@ -42,6 +42,11 @@
   }
 })(function(React) {
 
+  var _dependsOn = {};
+  var _dependsInjected = {};
+  var _mixins = {};
+  var _initiatedOnce = {};
+
   function setState(state, context) {
     if (context.isMounted()) {
       context.setState(state);
@@ -90,13 +95,13 @@
           // there can be no function calls here because of the regex match
           params = eval('[' + params + ']');
         }
-        var mixin = React.mixins._mixins[name],
+        var mixin = _mixins[name],
           checkAgain = false,
           skip = false;
 
         if (mixin) {
           if (typeof mixin === 'function') {
-            if (React.mixins._initiatedOnce[name]) {
+            if (_initiatedOnce[name]) {
               initiatedOnce[name] = (initiatedOnce[name] || []);
               initiatedOnce[name].push(params);
               skip = true;
@@ -107,8 +112,8 @@
           } else if (params) {
             throw new Error('the mixin "' + name + '" does not support parameters');
           }
-          get(React.mixins._dependsOn[name], index, initiatedOnce, rtn);
-          get(React.mixins._dependsInjected[name], index, initiatedOnce, rtn);
+          get(_dependsOn[name], index, initiatedOnce, rtn);
+          get(_dependsInjected[name], index, initiatedOnce, rtn);
 
           index[indexName] = true;
           if (checkAgain) {
@@ -132,6 +137,22 @@
           // add the named mixin and all of it's dependencies
           addTo(mixin);
         } else {
+          // if the mixin has a "mixins" attribute, clone and add those dependencies first
+          if (mixin.mixins) {
+            get(mixin.mixins, index, initiatedOnce, rtn);
+            var _mixin = _mixins[mixin];
+            if (!_mixin) {
+              _mixin = {};
+              for (var key in mixin) {
+                if (key !== 'mixins') {
+                  _mixin[key] = mixin[key];
+                }
+              }
+            }
+            _mixins[mixin] = _mixin;
+            mixin = _mixin;
+          }
+
           // just add the mixin normally
           rtn.push(mixin);
         }
@@ -164,7 +185,7 @@
 
     for (var m in mixins) {
       if (mixins.hasOwnProperty(m)) {
-        addInitiatedOnce(React.mixins._mixins[m], mixins[m]);
+        addInitiatedOnce(_mixins[m], mixins[m]);
       }
     }
   }
@@ -180,14 +201,14 @@
 
   function addMixin(name, mixin, depends, override, initiatedOnce) {
     var mixins = React.mixins;
-    if (!override && mixins._mixins[name]) {
+    if (!override && _mixins[name]) {
       return;
     }
-    mixins._dependsOn[name] = depends.length && depends;
-    mixins._mixins[name] = mixin;
+    _dependsOn[name] = depends.length && depends;
+    _mixins[name] = mixin;
 
     if (initiatedOnce) {
-      mixins._initiatedOnce[name] = true;
+      _initiatedOnce[name] = true;
     }
   }
 
@@ -243,9 +264,9 @@
      * @param (any additional) {string} dependencies that should be registered against the mixin
      */
     inject: function(name) {
-      var l = this._dependsInjected[name];
+      var l = _dependsInjected[name];
       if (!l) {
-        l = this._dependsInjected[name] = [];
+        l = _dependsInjected[name] = [];
       }
       l.push(Array.prototype.slice.call(arguments, 1));
     },
@@ -263,13 +284,15 @@
     },
 
     exists: function(name) {
-      return this._mixins[name] || false;
+      return _mixins[name] || false;
     },
 
-    _dependsOn: {},
-    _dependsInjected: {},
-    _mixins: {},
-    _initiatedOnce: {}
+    _reset: function() {
+      _dependsOn = {};
+      _mixins = {};
+      _dependsInjected = {};
+      _onceInitiated = {};
+    }
   };
 
   /**

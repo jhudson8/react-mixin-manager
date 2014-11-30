@@ -225,6 +225,19 @@ Sections
 
 ### Advanced Features
 
+#### Non-registered mixins with dependencies
+
+You can still define dependencies when referring to object mixins by using the ```mixins``` attribute just as if the mixin were a component class definition.
+
+```
+var myMixin = {
+  mixins: [...]
+};
+var MyClass = React.createClass({
+  mixins: [myMixin]
+});
+```
+
 #### Dynamic Mixins
 
 If the mixin that is registered is a function, the result of that function will be used as the actual mixin provided to the React component.  This can be useful if runtime conditions need to be evaluated to determine what should be exposed to the component.
