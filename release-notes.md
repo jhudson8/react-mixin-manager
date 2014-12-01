@@ -2,7 +2,13 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.1...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.2...master)
+
+## v0.9.2 - December 1st, 2014
+- allow object mixin references to have a "mixins" attribute to define dependencies - e6a1edd
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.1...v0.9.2)
 
 ## v0.9.1 - November 26th, 2014
 - for AMD, you must execute the function with params (see README AMD install instructions) - 37c72bb
