@@ -12,6 +12,9 @@
     "mixin",
     "react-component"
   ],
+  "scripts": {
+    "test": "mocha"
+  },
   "devDependencies": {
     "chai": "*",
     "mocha": "*",
