@@ -2,7 +2,23 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.1...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.2...master)
+
+## v0.9.2 - December 1st, 2014
+- [#2](https://github.com/jhudson8/react-mixin-manager/issues/2) - require('react-mixin-manager')(require('react')) yields undefined
+- update - 34dc838
+- envs - 81fb232
+- npmignore - da67b5f
+- versions - 5f4dd0f
+- travis - 05df198
+- travis - 6aaafae
+- all object mixin references to have a "mixins" attribute to define dependencies - e6a1edd
+- refactor - 6ac197a
+
+Compatibility notes:
+- TODO : What might have broken?
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.1...v0.9.2)
 
 ## v0.9.1 - November 26th, 2014
 - for AMD, you must execute the function with params (see README AMD install instructions) - 37c72bb
