@@ -204,7 +204,9 @@
     if (!override && _mixins[name]) {
       return;
     }
-    _dependsOn[name] = depends.length && depends;
+    if (depends.length) {
+      _dependsOn[name] = depends;
+    }
     _mixins[name] = mixin;
 
     if (initiatedOnce) {
