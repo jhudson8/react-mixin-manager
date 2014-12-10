@@ -42,6 +42,7 @@
   }
 })(function(React) {
 
+  // react-backbone:with-deps start
   var _dependsOn = {};
   var _dependsInjected = {};
   var _mixins = {};
@@ -349,5 +350,6 @@
   });
   React.mixins.setState = setState;
   React.mixins.getState = getState;
+  // react-backbone:with-deps end
 
 });
