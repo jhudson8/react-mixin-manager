@@ -2,7 +2,13 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.3...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.4...master)
+
+## v0.9.4 - December 11th, 2014
+- code cleanup and remove accidental global var 5f4674f
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.3...v0.9.4)
 
 ## v0.9.3 - December 10th, 2014
 no functional code changes.  There is just an additional comment that is used to create react-backbone/with-deps.js
