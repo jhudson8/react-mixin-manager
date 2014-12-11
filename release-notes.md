@@ -2,7 +2,13 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.2...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.3...master)
+
+## v0.9.3 - December 10th, 2014
+no functional code changes.  There is just an additional comment that is used to create react-backbone/with-deps.js
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.2...v0.9.3)
 
 ## v0.9.2 - December 1st, 2014
 - allow object mixin references to have a "mixins" attribute to define dependencies - e6a1edd
