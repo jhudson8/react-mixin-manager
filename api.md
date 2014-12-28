@@ -1,3 +1,7 @@
+* Register mixins using a string alias
+* Allow mixins to depend on other mixins
+* Reduce the chance of mixin attribute duplication
+* Provide dynamic mixins using reference parameters
 
 ### Common Examples
 Include a mixin registered with react-mixin-manager to your component class
