@@ -2,7 +2,30 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.4...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.10.0...master)
+
+## v0.10.0 - December 29th, 2014
+- initiatedOnce mixins should accept array or argument arrays - dc3cdc4
+
+Compatibility notes:
+If you are using the advanced "initiatedOnce" capabilities, the argument structure has changed.
+
+Previously, there would be a function argument representing each parameterized mixin reference and now there is a single argument which is an array of argument arrays.  The length of this array would be equal to the number of times the mixin was referenced with parameters.
+
+For example:
+```
+    mixins: ['foo("a")', 'foo("b", "c")']
+```
+Would previously execute the mixin wrapper function as
+```
+    function(["a"], ["b", "c"])
+```
+But will now use
+```
+    function([["a"], ["b", "c"]])
+```
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.9.4...v0.10.0)
 
 ## v0.9.4 - December 11th, 2014
 - code cleanup and remove accidental global var 5f4674f
