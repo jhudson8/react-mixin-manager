@@ -259,7 +259,7 @@ It is occasionally useful to add dynamic behavior to the mixin that is not based
 
 ```
 React.mixins.add('myMixin', function(something) {
-  if (something) {
+  if (something === 'foo') {
     return mixin1;
   } else {
     return mixin2;
@@ -276,7 +276,8 @@ In this example, when *myComponent* is declared (not instantiated), based on the
 *note: booleans and numbers can be used as well so make sure to wrap strings with quotes*
 
 
-The ***initiatedOnce*** option can be used when registering a mixin to ensure that the mixin is only called a single time regardless of how many parameterized references of that mixin there are for a React class.  In this case, the mixin function will accept a single parameter which is an array of argument arrays representing each parameterized mixin reference.
+#### Mixin initiated once with multiple references
+The ***initiatedOnce*** option can be used when registering a mixin to ensure that the mixin is only called a single time regardless of how many parameterized references of that mixin there are for a React class (or any of the mixin dependencies for that class).  In this case, the mixin function will accept a single parameter which is an array of argument arrays representing each parameterized mixin reference.
 
 ```
 // register initiatedOnceMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
@@ -286,22 +287,17 @@ React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, initiatedOnc
 React.mixins.add('myMixin', myMixinImpl, 'initiatedOnceMixin("foo", "fee")');
 ...
 React.createClass({
-  mixins: ['initiatedOnceMixin("bar")', 'myMixin', anyOtherPlainOldMixin]
-  // myMixinImpl, initiatedOnceMixinImpl(["bar"], ["foo"]), anyOtherPlainOldMixin will be included
+  mixins: ['initiatedOnceMixin("bar")', 'myMixin']
 });
 ```
 
-In the above case, if the mixin function were to log the parameters it received
+The above case will call the ```initiatedOnceMixinImpl``` like below
 ```
-React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, function(args) {
-  console.log(JSON.stringify(args));
-});
-```
-
-The output would look like
-```
-[["foo","fee"],["bar"]]
-
-// ["foo", "fee"] from the mixin dependency reference
-// ["bar"] from the react class mixin reference
+initiatedOnceMixinImpl = function(args) {
+  // args = [
+  //    ['foo', 'fee'], // from the first "initiatedOnceMixin" reference
+  //    ['bar'] // from the second "initiatedOnceMixin" reference
+  // ]
+  return ...
+}
 ```

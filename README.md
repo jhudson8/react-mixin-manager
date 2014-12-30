@@ -7,7 +7,7 @@ Enhance React with full-featured mixin dependency management.
 * Reduce the chance of mixin attribute duplication
 * Provide dynamic mixins using reference parameters
 
-[View the fancydocs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-mixin-manager) for a better docs experience
+[View the installation and API docs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-mixin-manager) for a better docs experience
 
 ## Support me
 

@@ -1,3 +1,5 @@
+/*global global, require */
+
 var chai = require('chai'),
   React = require('react'),
   expect = chai.expect,
@@ -19,18 +21,23 @@ var chai = require('chai'),
       param1: param1,
       param2: param2
     };
+  },
+  initiatedOnceMixinWithParams = function(calls) {
+    return {
+      calls: calls
+    };
   };
 
 var jsdom = require('jsdom');
  
 // move into beforeEach and flip global.window.close on to improve
 // cleaning of environment during each test and prevent memory leaks
-document = jsdom.jsdom('<html><body><div id="test"></div></body></html>', jsdom.level(1, 'core'));
-window = document.parentWindow;
+global.document = jsdom.jsdom('<html><body><div id="test"></div></body></html>', jsdom.level(1, 'core'));
+global.window = document.parentWindow;
 
 require('../index')(React);
 
-describe('#getState / #setState', function(done) {
+describe('#getState / #setState', function() {
   it('should get and state before component is initialized', function(done) {
     var childMixin = {
       getInitialState: function() {
@@ -39,16 +46,16 @@ describe('#getState / #setState', function(done) {
         return null;
       }
     };
-    var Component = React.createClass({
+    var Component = React.createFactory(React.createClass({
       mixins: ['state', childMixin],
       render: function() {
         expect(this.state.foo).to.eql('bar');
         done();
         return React.createElement('div');
       }
-    });
+    }));
     React.render(new Component(), document.getElementById('test'));
-  })
+  });
 });
 
 describe('react-mixin-dependencies', function() {
@@ -151,11 +158,10 @@ describe('react-mixin-dependencies', function() {
     React.mixins.add({
       name: 'p',
       initiatedOnce: true
-    }, mixinWithParams);
+    }, initiatedOnceMixinWithParams);
     var rtn = React.mixins.get('p("foo")', 'p("bar")');
     expect(rtn).to.eql([{
-      param1: ['foo'],
-      param2: ['bar']
+      calls: [['foo'], ['bar']]
     }]);
   });
 
@@ -164,11 +170,10 @@ describe('react-mixin-dependencies', function() {
     React.mixins.add({
       name: 'p',
       initiatedOnce: true
-    }, mixinWithParams, 'mixin1');
+    }, initiatedOnceMixinWithParams, 'mixin1');
     var rtn = React.mixins.get('p("foo")', 'p("bar")');
     expect(rtn).to.eql([mixin1, {
-      param1: ['foo'],
-      param2: ['bar']
+      calls: [['foo'], ['bar']]
     }]);
   });
 
@@ -180,11 +185,10 @@ describe('react-mixin-dependencies', function() {
     React.mixins.replace({
       name: 'p',
       initiatedOnce: true
-    }, mixinWithParams);
+    }, initiatedOnceMixinWithParams);
     var rtn = React.mixins.get('p("foo", "test")', 'p("bar")');
     expect(rtn).to.eql([{
-      param1: ['foo', 'test'],
-      param2: ['bar']
+      calls: [['foo', 'test'], ['bar']]
     }]);
   });
 
@@ -203,6 +207,27 @@ describe('react-mixin-dependencies', function() {
       param1: 'foo',
       param2: 'bar'
     }]);
+  });
+
+  it('should reuse dependant mixins even if they are called with parameters using initiatedOnce (and keep them in the right order)', function() {
+    var initiatedOnce = function(argsArr) {
+      return {
+        argsArr: function() {
+          return argsArr;
+        }
+      };
+    };
+    React.mixins.add({name: 'once', initiatedOnce: true}, initiatedOnce);
+    var depOn = {
+      test: function() {}
+    };
+    React.mixins.add('depOn', depOn, 'once');
+
+    var rtn = React.mixins.get(['depOn', 'once("foo")']);
+    expect(rtn.length).to.eql(2);
+
+    var argsArr = rtn[0].argsArr();
+    expect(argsArr).to.eql([['foo']]);
   });
 
   it('should add "mixins" attribute as dependencies from a provided mixin', function() {

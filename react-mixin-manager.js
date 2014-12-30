@@ -109,9 +109,19 @@
                 if (mixin) {
                     if (typeof mixin === 'function') {
                         if (_initiatedOnce[name]) {
-                            initiatedOnce[name] = (initiatedOnce[name] || []);
-                            initiatedOnce[name].push(params);
-                            skip = true;
+                            if (!initiatedOnce[name]) {
+                                initiatedOnce[name] = [];
+                                // add the placeholder so the mixin ends up in the right place
+                                // we will replace all names with the appropriate mixins at the end
+                                // (so we have all of the appropriate arguments)
+                                mixin = name;
+                            } else {
+                                // but we only want to add it a single time
+                                skip = true;
+                            }
+                            if (params) {
+                                initiatedOnce[name].push(params);
+                            }
                         } else {
                             mixin = mixin.apply(this, params || []);
                             checkAgain = true;
@@ -180,19 +190,21 @@
      * @param mixins {Object} hash of mixins keys and list of its parameters
      * @param rtn {Array} the normalized return array
      */
-    function getInitiatedOnce(mixins, rtn) {
+    function applyInitiatedOnceArgs(mixins, rtn) {
 
         /**
          * added once initiated mixins to return array
          */
-        function addInitiatedOnce(mixin, params) {
-            mixin = mixin.apply(this, params || []);
-            rtn.push(mixin);
+        function addInitiatedOnce(name, mixin, params) {
+            mixin = mixin.call(this, params || []);
+            // find the name placeholder in the return arr and replace it with the mixin
+            var index = rtn.indexOf(name);
+            rtn.splice(index, 1, mixin);
         }
 
         for (var m in mixins) {
             if (mixins.hasOwnProperty(m)) {
-                addInitiatedOnce(_mixins[m], mixins[m]);
+                addInitiatedOnce(m, _mixins[m], mixins[m]);
             }
         }
     }
@@ -262,7 +274,7 @@
                 initiatedOnce = {};
 
             get(Array.prototype.slice.call(arguments), index, initiatedOnce, rtn);
-            getInitiatedOnce(initiatedOnce, rtn);
+            applyInitiatedOnceArgs(initiatedOnce, rtn);
             return rtn;
         },
 
