@@ -1,3 +1,6 @@
+react-mixin-manager
+========================
+
 * Register mixins using a string alias
 * Allow mixins to depend on other mixins
 * Reduce the chance of mixin attribute duplication
