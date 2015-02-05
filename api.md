@@ -201,6 +201,8 @@ Mixin used to make available a single function ```deferUpdate``` to your compone
 
 This is similar to [forceUpdate](http://facebook.github.io/react/docs/component-api.html) but after a setTimeout(0).  Any calls to deferUpdate before the callback fires will execute only a single [forceUpdate](http://facebook.github.io/react/docs/component-api.html) call.  This can be beneficial for mixins that listen to certain events that might cause a render multiple times unnecessarily.
 
+By default, the interval between a ```deferUpdate``` call and the associated ```forceUpdate``` is 100ms (so any updates during that time will be cancelled).  If this behavior is not desired, ```React.mixins.defaultDeferUpdateInterval``` can be set to 0 or any other value (in milis) to change the update wait period.
+
 ##### Examples
 ```
 React.createClass({
@@ -211,6 +213,19 @@ React.createClass({
   }
 });
 ```
+
+The defer interval can also be adjusted on a per component basis.  Any mixins registered as dependencies of the React component will obey the value that is set for the component.  It can be set using the mixin parameter.
+```
+React.createClass({
+  // update in the next event loop for this component only
+  mixin: ['deferUpdate(0)'],
+
+  somethingThatRequiresUpdate: function() {
+    this.deferUpdate();
+  }
+});
+```
+
 
 ### state
 Very simple mixin that ensures that the component state is an object.  This is useful if you

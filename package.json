@@ -16,13 +16,13 @@
     "test": "mocha"
   },
   "devDependencies": {
-    "underscore": "~1.7",
-    "react": "~0.12",
     "chai": "~1.10",
+    "jsdom": "~1.3",
     "mocha": "~2.0",
-    "sinon": "~1.12",
+    "react": "~0.12",
+    "sinon": "^1.12.2",
     "uglify-js": "~2.4",
-    "jsdom": "~1.3"
+    "underscore": "~1.7"
   },
   "license": "MIT"
 }

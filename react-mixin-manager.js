@@ -43,10 +43,7 @@
 })(function(React) {
 
     // main body start
-    var _dependsOn = {};
-    var _dependsInjected = {};
-    var _mixins = {};
-    var _initiatedOnce = {};
+    var _dependsOn, _dependsInjected, _mixins, _initiatedOnce;
 
     function setState(state, context) {
         if (context.isMounted()) {
@@ -312,63 +309,97 @@
             _mixins = {};
             _dependsInjected = {};
             _initiatedOnce = {};
+            load();
         }
     };
 
-    /**
-     * mixin that exposes a "deferUpdate" method which will call forceUpdate after a setTimeout(0) to defer the update.
-     * This allows the forceUpdate method to be called multiple times while only executing a render 1 time.  This will
-     * also ensure the component is mounted before calling forceUpdate.
-     *
-     * It is added to mixin manager directly because it serves a purpose that benefits when multiple plugins use it
-     */
-    React.mixins.add('deferUpdate', {
-        getInitialState: function() {
-            // ensure that the state exists because we don't want to call setState (which will cause a render)
-            return {};
-        },
-        deferUpdate: function() {
-            var state = this.state;
-            if (!state._deferUpdate) {
-                state._deferUpdate = true;
-                var self = this;
-                setTimeout(function() {
-                    delete state._deferUpdate;
-                    if (self.isMounted()) {
-                        self.forceUpdate();
-                    }
-                }, 0);
-            }
-        }
-    });
-
-    /**
-     * very simple mixin that ensures that the component state is an object.  This is useful if you
-     * know a component will be using state but won't be initialized with a state to prevent a null check on render
-     */
-    React.mixins.add('state', {
-        getInitialState: function() {
-            return {};
-        },
-
-        componentWillMount: function() {
-            // not directly related to this mixin but all of these mixins have this as a dependency
-            // if setState was called before the component was mounted, the actual component state was
-            // not set because it might not exist.  Convert the pretend state to the real thing
-            // (but don't trigger a render)
-            var _state = this.__temporary_state;
-            if (_state) {
-                for (var key in _state) {
-                    if (_state.hasOwnProperty(key)) {
-                        this.state[key] = _state[key];
-                    }
+    function load() {
+        /**
+         * mixin that exposes a "deferUpdate" method which will call forceUpdate after a setTimeout(0) to defer the update.
+         * This allows the forceUpdate method to be called multiple times while only executing a render 1 time.  This will
+         * also ensure the component is mounted before calling forceUpdate.
+         *
+         * It is added to mixin manager directly because it serves a purpose that benefits when multiple plugins use it
+         */
+        var defaultDeferUpdateInterval = React.mixins.defaultDeferUpdateInterval = 100;
+        React.mixins.add({name: 'deferUpdate', initiatedOnce: true}, function(args) {
+            var fakeMaxInterval = 999999999;
+            var lowestInterval = fakeMaxInterval;
+            for (var i=0; i<args.length; i++) {
+                if (args[i].length > 0) {
+                    lowestInterval = Math.min(lowestInterval, args[i]);
                 }
-                delete this.__temporary_state;
             }
-        }
-    });
-    React.mixins.setState = setState;
-    React.mixins.getState = getState;
-    // main body end
+            if (lowestInterval === fakeMaxInterval) {
+                lowestInterval = defaultDeferUpdateInterval;
+            }
 
+            function clearDeferState(context) {
+                var timerId = context.state._deferUpdateTimer;
+                if (timerId) {
+                    clearTimeout(timerId);
+                    delete context.state._deferUpdateTimer;
+                }
+            }
+
+            return {
+                getInitialState: function() {
+                    // ensure that the state exists because we don't want to call setState (which will cause a render)
+                    return {};
+                },
+                shouldComponentUpdate: function() {
+                    if (this.state._deferUpdateTimer && lowestInterval !== 0) {
+                        // we will be updating soon - keep from rendering multiple times
+                        return false;
+                    }
+                },
+                componentDidUpdate: function() {
+                    // if we just force updated, no need to update again
+                    clearDeferState(this);
+                },
+                deferUpdate: function() {
+                    var state = this.state,
+                        self = this;
+                    clearDeferState(this);
+                    state._deferUpdateTimer = setTimeout(function() {
+                        clearDeferState(self);
+                        if (self.isMounted()) {
+                            self.forceUpdate();
+                        }
+                    }, lowestInterval);
+                }
+            };
+        });
+
+        /**
+         * very simple mixin that ensures that the component state is an object.  This is useful if you
+         * know a component will be using state but won't be initialized with a state to prevent a null check on render
+         */
+        React.mixins.add('state', {
+            getInitialState: function() {
+                return {};
+            },
+
+            componentWillMount: function() {
+                // not directly related to this mixin but all of these mixins have this as a dependency
+                // if setState was called before the component was mounted, the actual component state was
+                // not set because it might not exist.  Convert the pretend state to the real thing
+                // (but don't trigger a render)
+                var _state = this.__temporary_state;
+                if (_state) {
+                    for (var key in _state) {
+                        if (_state.hasOwnProperty(key)) {
+                            this.state[key] = _state[key];
+                        }
+                    }
+                    delete this.__temporary_state;
+                }
+            }
+        });
+        React.mixins.setState = setState;
+        React.mixins.getState = getState;
+        // main body end
+    }
+
+    React.mixins._reset();
 });

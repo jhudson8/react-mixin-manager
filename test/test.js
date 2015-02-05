@@ -1,6 +1,6 @@
 /*global global, require */
-
-var chai = require('chai'),
+var sinon = require('sinon'),
+  chai = require('chai'),
   React = require('react'),
   expect = chai.expect,
   _ = require('underscore'),
@@ -248,5 +248,73 @@ describe('react-mixin-dependencies', function() {
     // make sure the copied mixin was cached
     rtn = React.mixins.get('2', testMixin);
     expect(rtn[2] === cached).to.eql(true);
+  });
+
+  describe('#deferUpdate', function() {
+    var self;
+    beforeEach(function() {
+      this.clock = sinon.useFakeTimers();
+      self = {
+        isMounted: function() { return true; },
+        forceUpdate: sinon.spy(),
+        state: {}
+      }
+    });
+    afterEach(function() {
+      this.clock.restore();
+    });
+
+    var mixin = {
+      // placeholder to have something to register
+    };
+    it('should default to 100ms', function() {
+      React.mixins.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = React.mixins.get('deferTest')[0];
+      deferMixin.deferUpdate.call(self);
+      this.clock.tick(99);
+      expect(self.forceUpdate.callCount).to.eql(0);
+      this.clock.tick(1);
+      expect(self.forceUpdate.callCount).to.eql(1);
+      expect(self.state._deferUpdateTimer).to.eql(undefined);
+    });
+    it('should cancel if another force update occurs', function() {
+      React.mixins.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = React.mixins.get('deferTest')[0];
+      deferMixin.deferUpdate.call(self);
+      deferMixin.componentDidUpdate.call(self);
+      expect(self.state._deferUpdateTimer).to.eql(undefined);
+      this.clock.tick(101);
+      expect(self.forceUpdate.callCount).to.eql(0);
+    });
+    it('should prevent rendering if an update timer has been set', function() {
+      React.mixins.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = React.mixins.get('deferTest')[0];
+      deferMixin.deferUpdate.call(self);
+      var rtn = deferMixin.shouldComponentUpdate.call(self);
+      expect(rtn).to.eql(false);
+    });
+    it('should only render once if multiple deferUpdates are called', function() {
+      React.mixins.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = React.mixins.get('deferTest')[0];
+      deferMixin.deferUpdate.call(self);
+      deferMixin.deferUpdate.call(self);
+      this.clock.tick(99);
+      expect(self.forceUpdate.callCount).to.eql(0);
+      this.clock.tick(1);
+      expect(self.forceUpdate.callCount).to.eql(1);
+      expect(self.state._deferUpdateTimer).to.eql(undefined);
+    });
+    it('should update timer if a later deferUpdate is called', function() {
+      React.mixins.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = React.mixins.get('deferTest')[0];
+      deferMixin.deferUpdate.call(self);
+      this.clock.tick(50);
+      deferMixin.deferUpdate.call(self);
+      this.clock.tick(51);
+      expect(self.forceUpdate.callCount).to.eql(0);
+      this.clock.tick(50);
+      expect(self.forceUpdate.callCount).to.eql(1);
+      expect(self.state._deferUpdateTimer).to.eql(undefined);
+    });
   });
 });
