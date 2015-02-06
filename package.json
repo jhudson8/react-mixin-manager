@@ -1,6 +1,6 @@
 {
   "name": "react-mixin-manager",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "author": "Joe Hudson <joehud@gmail.com>",
   "description": "simple react mixin registration manager which allows mixins to depend on other mixins",
   "repository": {
