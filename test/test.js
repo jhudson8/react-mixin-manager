@@ -253,12 +253,13 @@ describe('react-mixin-dependencies', function() {
   describe('#deferUpdate', function() {
     var self;
     beforeEach(function() {
+      React.mixins.defaultDeferUpdateInterval = 100;
       this.clock = sinon.useFakeTimers();
       self = {
         isMounted: function() { return true; },
         forceUpdate: sinon.spy(),
         state: {}
-      }
+      };
     });
     afterEach(function() {
       this.clock.restore();
@@ -315,6 +316,13 @@ describe('react-mixin-dependencies', function() {
       this.clock.tick(50);
       expect(self.forceUpdate.callCount).to.eql(1);
       expect(self.state._deferUpdateTimer).to.eql(undefined);
+    });
+    it('should execute directly if default interval is < 0', function() {
+      React.mixins.defaultDeferUpdateInterval = -1;
+      React.mixins.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = React.mixins.get('deferTest')[0];
+      deferMixin.deferUpdate.call(self);
+      expect(self.forceUpdate.callCount).to.eql(1);
     });
   });
 });

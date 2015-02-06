@@ -321,9 +321,9 @@
          *
          * It is added to mixin manager directly because it serves a purpose that benefits when multiple plugins use it
          */
-        var defaultDeferUpdateInterval = React.mixins.defaultDeferUpdateInterval = 100;
+        React.mixins.defaultDeferUpdateInterval = 0;
+        var fakeMaxInterval = 999999999;
         React.mixins.add({name: 'deferUpdate', initiatedOnce: true}, function(args) {
-            var fakeMaxInterval = 999999999;
             var lowestInterval = fakeMaxInterval;
             for (var i=0; i<args.length; i++) {
                 if (args[i].length > 0) {
@@ -331,7 +331,7 @@
                 }
             }
             if (lowestInterval === fakeMaxInterval) {
-                lowestInterval = defaultDeferUpdateInterval;
+                lowestInterval = React.mixins.defaultDeferUpdateInterval;
             }
 
             function clearDeferState(context) {
@@ -348,7 +348,7 @@
                     return {};
                 },
                 shouldComponentUpdate: function() {
-                    if (this.state._deferUpdateTimer && lowestInterval !== 0) {
+                    if (this.state._deferUpdateTimer && lowestInterval > 0) {
                         // we will be updating soon - keep from rendering multiple times
                         return false;
                     }
@@ -358,6 +358,9 @@
                     clearDeferState(this);
                 },
                 deferUpdate: function() {
+                    if (lowestInterval < 0) {
+                        return this.forceUpdate();
+                    }
                     var state = this.state,
                         self = this;
                     clearDeferState(this);

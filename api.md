@@ -199,9 +199,10 @@ Mixin used to make available a single function ```deferUpdate``` to your compone
 
 #### deferUpdate()
 
-This is similar to [forceUpdate](http://facebook.github.io/react/docs/component-api.html) but after a setTimeout(0).  Any calls to deferUpdate before the callback fires will execute only a single [forceUpdate](http://facebook.github.io/react/docs/component-api.html) call.  This can be beneficial for mixins that listen to certain events that might cause a render multiple times unnecessarily.
+This is similar to [forceUpdate](http://facebook.github.io/react/docs/component-api.html) but moved to the next event loop (or after a set interval).  Any calls to deferUpdate before the callback fires will execute only a single [forceUpdate](http://facebook.github.io/react/docs/component-api.html) call.  This can be beneficial for mixins that listen to certain events that might cause a render multiple times unnecessarily.  [react-backbone](https://github.com/jhudson8/react-backbone), for example, uses this feature heavily.
 
-By default, the interval between a ```deferUpdate``` call and the associated ```forceUpdate``` is 100ms (so any updates during that time will be cancelled).  If this behavior is not desired, ```React.mixins.defaultDeferUpdateInterval``` can be set to 0 or any other value (in milis) to change the update wait period.
+```React.mixins.defaultDeferUpdateInterval``` can be used to set the interval in milis between the ```deferUpdate``` call and the actual ```forceUpdate``` call.  A value < 0 will not defer the ```forceUdpate``` call (beneficial only to change behavior of 3rd party mixins that depend on this functionality).
+
 
 ##### Examples
 ```
@@ -217,8 +218,8 @@ React.createClass({
 The defer interval can also be adjusted on a per component basis.  Any mixins registered as dependencies of the React component will obey the value that is set for the component.  It can be set using the mixin parameter.
 ```
 React.createClass({
-  // update in the next event loop for this component only
-  mixin: ['deferUpdate(0)'],
+  // call forceUpdate 100 ms after the deferUpdate call
+  mixin: ['deferUpdate(100)'],
 
   somethingThatRequiresUpdate: function() {
     this.deferUpdate();
