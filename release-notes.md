@@ -2,7 +2,28 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.10.0...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.11.0...master)
+
+## v0.11.0 - February 5th, 2015
+- add customizable deferUpdate timer - 9b28b4e
+
+```React.mixins.defaultDeferUpdateInterval``` can be used to set the interval in milis between the ```deferUpdate``` call and the actual ```forceUpdate``` call.  A value < 0 will not defer the ```forceUdpate``` call (beneficial only to change behavior of 3rd party mixins that depend on this functionality).
+
+The defer interval can also be adjusted on a per component basis.  Any mixins registered as dependencies of the React component will obey the value that is set for the component.  It can be set using the mixin parameter.
+
+```
+React.createClass({
+  // call forceUpdate 100 ms after the deferUpdate call
+  mixin: ['deferUpdate(100)'],
+
+  somethingThatRequiresUpdate: function() {
+    this.deferUpdate();
+  }
+});
+```
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.10.0...v0.11.0)
 
 ## v0.10.0 - December 29th, 2014
 - initiatedOnce mixins should accept array or argument arrays - dc3cdc4
