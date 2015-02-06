@@ -401,8 +401,9 @@
         });
         React.mixins.setState = setState;
         React.mixins.getState = getState;
-        // main body end
     }
 
     React.mixins._reset();
+    // main body end
+
 });
