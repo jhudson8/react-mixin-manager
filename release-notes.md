@@ -2,7 +2,14 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.11.0...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.11.1...master)
+
+## v0.11.1 - February 5th, 2015
+- fix token comment in un-minified source (for react-backbone) - df41ae9
+(no functional change)
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.11.0...v0.11.1)
 
 ## v0.11.0 - February 5th, 2015
 - add customizable deferUpdate timer - 9b28b4e
