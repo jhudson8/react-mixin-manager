@@ -2,7 +2,13 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.11.1...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.11.2...master)
+
+## v0.11.2 - February 9th, 2015
+- fix bug when named mixins were using the mixins attribute to define dependencies - f2dea59
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.11.1...v0.11.2)
 
 ## v0.11.1 - February 5th, 2015
 - fix token comment in un-minified source (for react-backbone) - df41ae9
