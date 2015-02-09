@@ -244,10 +244,6 @@ describe('react-mixin-dependencies', function() {
     // the mixin should be cloned so the mixins attribute can be removed
     expect(rtn[2]).to.not.eql(testMixin);
     expect(rtn[2]).to.eql({foo: 'bar'});
-    var cached = rtn[2];
-    // make sure the copied mixin was cached
-    rtn = React.mixins.get('2', testMixin);
-    expect(rtn[2] === cached).to.eql(true);
   });
 
   describe('#deferUpdate', function() {

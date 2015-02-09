@@ -133,12 +133,20 @@
                     if (checkAgain) {
                         get([mixin], index, initiatedOnce, rtn);
                     } else if (!skip) {
+                        checkForInlineMixins(mixin, rtn);
                         rtn.push(mixin);
                     }
 
                 } else {
                     throw new Error('invalid mixin "' + name + '"');
                 }
+            }
+        }
+
+        // if the mixin has a "mixins" attribute, clone and add those dependencies first
+        function checkForInlineMixins(mixin, rtn) {
+            if (mixin.mixins) {
+                get(mixin.mixins, index, initiatedOnce, rtn);
             }
         }
 
@@ -151,21 +159,7 @@
                     // add the named mixin and all of it's dependencies
                     addTo(mixin);
                 } else {
-                    // if the mixin has a "mixins" attribute, clone and add those dependencies first
-                    if (mixin.mixins) {
-                        get(mixin.mixins, index, initiatedOnce, rtn);
-                        var _mixin = _mixins[mixin];
-                        if (!_mixin) {
-                            _mixin = {};
-                            for (var key in mixin) {
-                                if (key !== 'mixins') {
-                                    _mixin[key] = mixin[key];
-                                }
-                            }
-                        }
-                        _mixins[mixin] = _mixin;
-                        mixin = _mixin;
-                    }
+                    checkForInlineMixins(mixin, rtn);
 
                     // just add the mixin normally
                     rtn.push(mixin);
@@ -268,10 +262,25 @@
         get: function() {
             var rtn = [],
                 index = {},
-                initiatedOnce = {};
+                initiatedOnce = {},
+                _toClone, _mixin;
 
             get(Array.prototype.slice.call(arguments), index, initiatedOnce, rtn);
             applyInitiatedOnceArgs(initiatedOnce, rtn);
+            // clone any mixins with a .mixins attribute and remove the attribute
+            // because it has already been extracted out
+            for (var i=0; i<rtn.length; i++) {
+                if (rtn[i].mixins) {
+                    _toClone = rtn[i];
+                    _mixin = {};
+                    for (var key in _toClone) {
+                        if (_toClone.hasOwnProperty(key) && key !== 'mixins') {
+                            _mixin[key] = _toClone[key];
+                        }
+                    }
+                    rtn[i] = _mixin;
+                }
+            }
             return rtn;
         },
 
