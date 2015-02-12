@@ -2,7 +2,23 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.11.2...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.12.0...master)
+
+## v0.12.0 - February 12th, 2015
+- add namespace support - a03f201
+
+If the name contains a dot "." the prefix is assumed to be the namespace.  A mixin can be retrieved by either using the fully qualified name or the suffix.  The first mixin to be added with any suffix will be returned if there are 2 different namespaces with the same suffix.
+
+```
+    React.mixins.add('namespace-a.foo', aFoo);
+    React.mixins.add('namespace-b.foo', bFoo);
+    mixins: ['foo'] // will result to [aFoo]
+    mixins: ['namespace-a.foo'] // will result to [aFoo]
+    mixins: ['namespace-b.foo'] // will result to [bFoo]
+```
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.11.2...v0.12.0)
 
 ## v0.11.2 - February 9th, 2015
 - fix bug when named mixins were using the mixins attribute to define dependencies - f2dea59
