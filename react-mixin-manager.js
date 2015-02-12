@@ -209,17 +209,27 @@
         return _createClass.apply(React, arguments);
     };
 
+    var namespaceMatch = /^[^\.]+\.(.*)/;
     function addMixin(name, mixin, depends, override, initiatedOnce) {
         if (!override && _mixins[name]) {
             return;
         }
-        if (depends.length) {
-            _dependsOn[name] = depends;
-        }
-        _mixins[name] = mixin;
 
-        if (initiatedOnce) {
-            _initiatedOnce[name] = true;
+        function _add(name) {
+            if (depends.length) {
+                _dependsOn[name] = depends;
+            }
+            _mixins[name] = mixin;
+
+            if (initiatedOnce) {
+                _initiatedOnce[name] = true;
+            }
+        }
+
+        _add(name);
+        var match = name.match(namespaceMatch);
+        if (match) {
+            _add(match[1]);
         }
     }
 

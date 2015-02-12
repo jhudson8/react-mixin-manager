@@ -73,6 +73,16 @@ API
 
 Register the mixin to be referenced as the alias `mixinName` with any additional dependencies (by alias) as additional arguments.  This *will not* replace an existing mixin by that alias.
 
+If the name contains a dot "." the prefix is assumed to be the namespace.  A mixin can be retrieved by either using the fully qualified name or the suffix.  The first mixin to be added with any suffix will be returned if there are 2 different namespaces with the same suffix.
+
+```
+    React.mixins.add('namespace-a.foo', aFoo);
+    React.mixins.add('namespace-b.foo', bFoo);
+    mixins: ['foo'] // will result to [aFoo]
+    mixins: ['namespace-a.foo'] // will result to [aFoo]
+    mixins: ['namespace-b.foo'] // will result to [bFoo]
+```
+
 ##### Examples
 
 *Standard mixin*

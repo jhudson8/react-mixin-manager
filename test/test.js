@@ -321,4 +321,20 @@ describe('react-mixin-dependencies', function() {
       expect(self.forceUpdate.callCount).to.eql(1);
     });
   });
+
+  describe('namespaces', function() {
+    it('should match with namespace', function() {
+      React.mixins.add('foo.bar', mixin1);
+      expect(React.mixins.get(['foo.bar'])).to.eql([mixin1]);
+    });
+    it('should match without namespace', function() {
+      React.mixins.add('foo.bar', mixin1);
+      expect(React.mixins.get(['bar'])).to.eql([mixin1]);
+    });
+    it('should alow dots after namespace', function() {
+      React.mixins.add('foo.bar.baz', mixin1);
+      expect(React.mixins.get(['foo.bar.baz'])).to.eql([mixin1]);
+      expect(React.mixins.get(['bar.baz'])).to.eql([mixin1]);
+    });
+  });
 });
