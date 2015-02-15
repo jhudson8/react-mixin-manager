@@ -2,7 +2,23 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.12.0...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.13.0...master)
+
+## v0.13.0 - February 15th, 2015
+- add method will now always replace a previous mixin with the same alias & removed the replace function - 7c005c0
+
+In order to have deterministic behavior with mixins that are added w/o namespaces and un-qualified references to mixins registered with a namespace there is no longer a ```React.mixins.replace``` and ```React.mixins.add``` will *always* replace a mixin if it currently exists with the same alias.
+
+If you only want to add a mixin if it does not previously exist, you can use
+
+```
+    if (!React.mixins.exists('mixinName')) {
+      React.mixins.add('mixinName', ...);
+    }
+```
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.12.0...v0.13.0)
 
 ## v0.12.0 - February 12th, 2015
 - add namespace support - a03f201
