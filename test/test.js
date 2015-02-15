@@ -106,13 +106,6 @@ describe('react-mixin-dependencies', function() {
     expect(rtn).to.eql([mixin1, mixin2, mixin3]);
   });
 
-  it('should replace existing mixins', function() {
-    React.mixins.add('1', mixin1);
-    React.mixins.replace('1', mixin2);
-    var rtn = React.mixins.get('1');
-    expect(rtn).to.eql([mixin2]);
-  });
-
   it('should use "exists" to tell if a mixin has already been registered', function() {
     React.mixins.add('1', mixin1);
     expect(!!React.mixins.exists('1')).to.eql(true);
@@ -177,28 +170,13 @@ describe('react-mixin-dependencies', function() {
     }]);
   });
 
-  it('should support replace for once initiated mixins', function() {
-    React.mixins.add({
-      name: 'p',
-      initiatedOnce: true
-    }, mixin1);
-    React.mixins.replace({
-      name: 'p',
-      initiatedOnce: true
-    }, initiatedOnceMixinWithParams);
-    var rtn = React.mixins.get('p("foo", "test")', 'p("bar")');
-    expect(rtn).to.eql([{
-      calls: [['foo', 'test'], ['bar']]
-    }]);
-  });
-
   it('should flatten the arguments for once initiated mixin', function() {
     var wrappedMixinImpl = function() {
       var params = Array.prototype.slice.call(arguments, 0);
       var flattenParams = _.flatten(params);
       return mixinWithParams.apply(this, flattenParams);
     };
-    React.mixins.replace({
+    React.mixins.add({
       name: 'p',
       initiatedOnce: true
     }, wrappedMixinImpl);
@@ -244,6 +222,12 @@ describe('react-mixin-dependencies', function() {
     // the mixin should be cloned so the mixins attribute can be removed
     expect(rtn[2]).to.not.eql(testMixin);
     expect(rtn[2]).to.eql({foo: 'bar'});
+  });
+
+  it('should replace a previous mixin', function() {
+    React.mixins.add('bar', mixin1);
+    React.mixins.add('bar', mixin2);
+    expect(React.mixins.get(['bar'])).to.eql([mixin2]);
   });
 
   describe('#deferUpdate', function() {
@@ -335,6 +319,12 @@ describe('react-mixin-dependencies', function() {
       React.mixins.add('foo.bar.baz', mixin1);
       expect(React.mixins.get(['foo.bar.baz'])).to.eql([mixin1]);
       expect(React.mixins.get(['bar.baz'])).to.eql([mixin1]);
+    });
+    it('should not replace existing mixins w/o namespace', function() {
+      React.mixins.add('bar', mixin1);
+      React.mixins.add('foo.bar', mixin2);
+      expect(React.mixins.get(['bar'])).to.eql([mixin1]);
+      expect(React.mixins.get(['foo.bar'])).to.eql([mixin2]);
     });
   });
 });

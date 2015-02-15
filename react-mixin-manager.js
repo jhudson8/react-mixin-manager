@@ -19,7 +19,7 @@
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * LIABILITY,ixi WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
@@ -210,25 +210,18 @@
     };
 
     var namespaceMatch = /^[^\.]+\.(.*)/;
-    function addMixin(name, mixin, depends, override, initiatedOnce) {
-        if (!override && _mixins[name]) {
-            return;
-        }
+    function addMixin(name, mixin, depends, initiatedOnce) {
 
         function _add(name) {
-            if (depends.length) {
-                _dependsOn[name] = depends;
-            }
             _mixins[name] = mixin;
-
-            if (initiatedOnce) {
-                _initiatedOnce[name] = true;
-            }
+            _dependsOn[name] = depends.length && depends;
+            _initiatedOnce[name] = initiatedOnce && true;
         }
 
         _add(name);
         var match = name.match(namespaceMatch);
-        if (match) {
+        // only include the non-namespaced mixin if it is not already taken
+        if (match &&  !_mixins[match[1]]) {
             _add(match[1]);
         }
     }
@@ -237,7 +230,7 @@
         // empty function which is used only as a placeholder to list dependencies
     }
 
-    function mixinParams(args, override) {
+    function mixinParams(args) {
         var name,
             options = args[0],
             initiatedOnce = false;
@@ -254,9 +247,9 @@
         }
 
         if (Array.isArray(args[1])) {
-            return [name, args[1][0], Array.prototype.slice.call(args[1], 1), override, initiatedOnce];
+            return [name, args[1][0], Array.prototype.slice.call(args[1], 1), initiatedOnce];
         } else {
-            return [name, args[1], Array.prototype.slice.call(args, 2), override, initiatedOnce];
+            return [name, args[1], Array.prototype.slice.call(args, 2), initiatedOnce];
         }
     }
 
@@ -312,11 +305,7 @@
         },
 
         add: function( /* options, mixin */ ) {
-            addMixin.apply(this, mixinParams(arguments, false));
-        },
-
-        replace: function( /* options, mixin */ ) {
-            addMixin.apply(this, mixinParams(arguments, true));
+            addMixin.apply(this, mixinParams(arguments));
         },
 
         exists: function(name) {
