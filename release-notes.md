@@ -17,6 +17,8 @@ If you only want to add a mixin if it does not previously exist, you can use
     }
 ```
 
+Also, getting close to a 1.0 release
+
 
 [Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.12.0...v0.13.0)
 
