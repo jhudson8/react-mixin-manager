@@ -54,7 +54,7 @@ CommonJS
 
 AMD
 
-```
+```javascript
     require(
       ['react', react-mixin-manager'], function(React, reactMixinManager) {
       reactMixinManager(React); 
@@ -84,7 +84,7 @@ Register the mixin to be referenced as the alias `mixinName` with any additional
 
 If the name contains a dot "." the prefix is assumed to be the namespace.  A mixin can be retrieved by either using the fully qualified name or the suffix.  The first mixin to be added with any suffix will be returned if there are 2 different namespaces with the same suffix.
 
-```
+```javascript
     React.mixins.add('namespace-a.foo', aFoo);
     React.mixins.add('namespace-b.foo', bFoo);
     mixins: ['foo'] // will result to [aFoo]
@@ -96,7 +96,7 @@ If the name contains a dot "." the prefix is assumed to be the namespace.  A mix
 
 *Standard mixin*
 
-```
+```javascript
     // register myMixinImpl as the alias "myMixin"
     React.mixins.add('myMixin', myMixinImpl);
     ...
@@ -108,7 +108,7 @@ If the name contains a dot "." the prefix is assumed to be the namespace.  A mix
 
 *Mixin with dependencies*
 
-```
+```javascript
     // register mixin1Impl as the alias "mixin1"
     React.mixins.add('mixin1', mixin1Impl);
     // register mixin2Impl as the alias "mixin2" with a dependency on the mixin defined by the alias "mixin1"
@@ -131,7 +131,7 @@ See "Mixins with Parameters" for advanced features
 
 Add additional dependencies to a mixin that has already been registered.  This is not useful for mixins that you create but can be useful to group additional mixins when 3rd party mixins are referenced.
 
-```
+```javascript
     // register myMixinImpl as the alias "myMixin"
     React.mixins.add('myMixin', myMixinImpl);
 
@@ -151,7 +151,7 @@ Add additional dependencies to a mixin that has already been registered.  This i
 
 Define an alias which can be used to group multiple named mixins together so that a single mixin alias will import all grouped mixins.
 
-```
+```javascript
     // register mixin1Impl as the alias "mixin1"
     React.mixins.add('mixin1', mixin1Impl);
 
@@ -176,7 +176,7 @@ Define an alias which can be used to group multiple named mixins together so tha
 Allows ReactComponents to call methods which mutate state before the ReactComponent.state has been initialized (in getInitialState).
 This is used, for example, in [react-events](https://github.com/jhudson8/react-events) to allow the ```listenTo``` method to be called within ```getInitialState```.
 
-```
+```javascript
     getInitialState: function() {
       React.mixins.setState({foo: 'bar'}, this);
     }
@@ -189,7 +189,7 @@ This is used, for example, in [react-events](https://github.com/jhudson8/react-e
 
 Return the state attribute which was set using ```React.mixins.setState```.
 
-```
+```javascript
     getInitialState: function() {
       var foo = React.mixins.getState('foo', this);
     }
@@ -208,7 +208,7 @@ This is similar to [forceUpdate](http://facebook.github.io/react/docs/component-
 ```React.mixins.defaultDeferUpdateInterval``` can be used to set the interval in milis between the ```deferUpdate``` call and the actual ```forceUpdate``` call.  A value < 0 will not defer the ```forceUdpate``` call (beneficial only to change behavior of 3rd party mixins that depend on this functionality).
 
 
-```
+```javascript
     React.createClass({
       mixin: ['deferUpdate'],
 
@@ -220,7 +220,7 @@ This is similar to [forceUpdate](http://facebook.github.io/react/docs/component-
 
 The defer interval can also be adjusted on a per component basis.  Any mixins registered as dependencies of the React component will obey the value that is set for the component.  It can be set using the mixin parameter.
 
-```
+```javascript
     React.createClass({
       // call forceUpdate 100 ms after the deferUpdate call
       mixin: ['deferUpdate(100)'],
@@ -246,7 +246,7 @@ Sections
 
 You can still define dependencies when referring to object mixins by using the ```mixins``` attribute just as if the mixin were a component class definition.
 
-```
+```javascript
     var myMixin = {
       mixins: [...]
     };
@@ -259,7 +259,7 @@ You can still define dependencies when referring to object mixins by using the `
 
 If the mixin that is registered is a function, the result of that function will be used as the actual mixin provided to the React component.  This can be useful if runtime conditions need to be evaluated to determine what should be exposed to the component.
 
-```
+```javascript
     React.mixins.add('myMixin', function() {
       if (window.something) {
         return mixin1;
@@ -281,7 +281,7 @@ In this example, when *myComponent* is declared (not instantiated), based on the
 
 It is occasionally useful to add dynamic behavior to the mixin that is not based on some property set by the parent but rather a property that is internally defined by the component being instantiated.  This can be done by using *Dynamic Mixins* (see above).  When a function is used to return the mixin, any parameters supplied when referencing the mixin will supplied as arguments.
 
-```
+```javascript
     React.mixins.add('myMixin', function(something) {
       if (something === 'foo') {
         return mixin1;
@@ -304,7 +304,7 @@ In this example, when *myComponent* is declared (not instantiated), based on the
 #### Mixin initiated once with multiple references
 The ***initiatedOnce*** option can be used when registering a mixin to ensure that the mixin is only called a single time regardless of how many parameterized references of that mixin there are for a React class (or any of the mixin dependencies for that class).  In this case, the mixin function will accept a single parameter which is an array of argument arrays representing each parameterized mixin reference.
 
-```
+```javascript
     // register initiatedOnceMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
     React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, initiatedOnceMixinImpl);
 
@@ -318,7 +318,7 @@ The ***initiatedOnce*** option can be used when registering a mixin to ensure th
 
 The above case will call the ```initiatedOnceMixinImpl``` like below
 
-```
+```javascript
     initiatedOnceMixinImpl = function(args) {
       // args = [
       //    ['foo', 'fee'], // from the first "initiatedOnceMixin" reference
