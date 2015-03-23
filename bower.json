@@ -1,7 +1,7 @@
 {
   "name": "react-mixin-manager",
   "main": "react-mixin-manager.js",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "homepage": "https://github.com/jhudson8/react-mixin-manager",
   "authors": [
     "Joe Hudson <joehud@gmail.com>"
