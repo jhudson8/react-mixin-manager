@@ -359,6 +359,8 @@
                     if (this.state._deferUpdateTimer && lowestInterval > 0) {
                         // we will be updating soon - keep from rendering multiple times
                         return false;
+                    } else {
+                        return true;
                     }
                 },
                 componentDidUpdate: function() {
