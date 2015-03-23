@@ -2,7 +2,13 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.13.0...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.13.1...master)
+
+## v0.13.1 - March 23rd, 2015
+- always return boolean value from shouldComponentUpdate - b8a62a9
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v0.13.0...v0.13.1)
 
 ## v0.13.0 - February 15th, 2015
 - add method will now always replace a previous mixin with the same alias & removed the replace function - 7c005c0
