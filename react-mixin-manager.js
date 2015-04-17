@@ -25,24 +25,20 @@
  */
 (function(main) {
     if (typeof define === 'function' && define.amd) {
-        define([], function() {
-            // with AMD
-            //  require(
-            //    ['react', react-mixin-manager'], function(React, reactMixinManager) {
-            //    reactMixinManager(React); 
-            //  });
-            return main;
+        define(['react'], function(React) {
+            // AMD
+            return main(React);
         });
     } else if (typeof exports !== 'undefined' && typeof require !== 'undefined') {
-        // with CommonJS
-        // require('react-mixin-manager')(require('react'));
-        module.exports = main;
+        // CommonJS
+        var React = require('react');
+        module.exports = main(React);
     } else {
-        main(React);
+        // browser
+        ReactMixinManager = main(React);
     }
 })(function(React) {
 
-    // main body start
     var _dependsOn, _dependsInjected, _mixins, _initiatedOnce;
 
     function setState(state, context) {
@@ -204,7 +200,7 @@
     var _createClass = React.createClass;
     React.createClass = function(spec) {
         if (spec.mixins) {
-            spec.mixins = React.mixins.get(spec.mixins);
+            spec.mixins = rtn.get(spec.mixins);
         }
         return _createClass.apply(React, arguments);
     };
@@ -253,7 +249,7 @@
         }
     }
 
-    React.mixins = {
+    var rtn = {
         /**
          * return the normalized mixins.  there can be N arguments with each argument being
          * - an array: will be flattened out to the parent list of mixins
@@ -329,9 +325,9 @@
          *
          * It is added to mixin manager directly because it serves a purpose that benefits when multiple plugins use it
          */
-        React.mixins.defaultDeferUpdateInterval = 0;
+        rtn.defaultDeferUpdateInterval = 0;
         var fakeMaxInterval = 999999999;
-        React.mixins.add({name: 'deferUpdate', initiatedOnce: true}, function(args) {
+        rtn.add({name: 'deferUpdate', initiatedOnce: true}, function(args) {
             var lowestInterval = fakeMaxInterval;
             for (var i=0; i<args.length; i++) {
                 if (args[i].length > 0) {
@@ -339,7 +335,7 @@
                 }
             }
             if (lowestInterval === fakeMaxInterval) {
-                lowestInterval = React.mixins.defaultDeferUpdateInterval;
+                lowestInterval = rtn.defaultDeferUpdateInterval;
             }
 
             function clearDeferState(context) {
@@ -388,7 +384,7 @@
          * very simple mixin that ensures that the component state is an object.  This is useful if you
          * know a component will be using state but won't be initialized with a state to prevent a null check on render
          */
-        React.mixins.add('state', {
+        rtn.add('state', {
             getInitialState: function() {
                 return {};
             },
@@ -409,11 +405,11 @@
                 }
             }
         });
-        React.mixins.setState = setState;
-        React.mixins.getState = getState;
+        rtn.setState = setState;
+        rtn.getState = getState;
     }
 
-    React.mixins._reset();
-    // main body end
+    rtn._reset();
 
+    return rtn;
 });

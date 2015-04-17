@@ -35,13 +35,13 @@ var jsdom = require('jsdom');
 global.document = jsdom.jsdom('<html><body><div id="test"></div></body></html>', jsdom.level(1, 'core'));
 global.window = document.parentWindow;
 
-require('../index')(React);
+var ReactMixinManager = require('../index');
 
 describe('#getState / #setState', function() {
   it('should get and state before component is initialized', function(done) {
     var childMixin = {
       getInitialState: function() {
-        React.mixins.setState({foo: 'bar'}, this);
+        ReactMixinManager.setState({foo: 'bar'}, this);
         expect(this.__temporary_state.foo).to.eql('bar');
         return null;
       }
@@ -60,77 +60,77 @@ describe('#getState / #setState', function() {
 
 describe('react-mixin-dependencies', function() {
   beforeEach(function() {
-    React.mixins._reset();
+    ReactMixinManager._reset();
   });
 
   it('should return standard mixins', function() {
-    var rtn = React.mixins.get(mixin1, mixin2);
+    var rtn = ReactMixinManager.get(mixin1, mixin2);
     expect(rtn).to.eql([mixin1, mixin2]);
   });
 
   it('should return named mixins', function() {
-    React.mixins.add('1', mixin1);
-    var rtn = React.mixins.get('1', mixin2);
+    ReactMixinManager.add('1', mixin1);
+    var rtn = ReactMixinManager.get('1', mixin2);
     expect(rtn).to.eql([mixin1, mixin2]);
   });
 
   it('should return named mixins and dependencies', function() {
-    React.mixins.add('1', mixin1);
-    React.mixins.add('2', mixin2, '1');
-    var rtn = React.mixins.get('2');
+    ReactMixinManager.add('1', mixin1);
+    ReactMixinManager.add('2', mixin2, '1');
+    var rtn = ReactMixinManager.get('2');
     expect(rtn).to.eql([mixin1, mixin2]);
   });
 
   it('should be able to register an array with first element as mixin and all others as dependencies', function() {
-    React.mixins.add('1', mixin1);
-    React.mixins.add('2', [mixin2, '1']);
-    var rtn = React.mixins.get('2');
+    ReactMixinManager.add('1', mixin1);
+    ReactMixinManager.add('2', [mixin2, '1']);
+    var rtn = ReactMixinManager.get('2');
     expect(rtn).to.eql([mixin1, mixin2]);
   });
 
   it('should return named n-level dependencies and not duplicate', function() {
-    React.mixins.add('1', mixin1);
-    React.mixins.add('2', mixin2, '1');
-    React.mixins.add('3', mixin3, '1', '2');
-    React.mixins.add('4', mixin4, '1', '3');
-    var rtn = React.mixins.get('4', '2');
+    ReactMixinManager.add('1', mixin1);
+    ReactMixinManager.add('2', mixin2, '1');
+    ReactMixinManager.add('3', mixin3, '1', '2');
+    ReactMixinManager.add('4', mixin4, '1', '3');
+    var rtn = ReactMixinManager.get('4', '2');
     expect(rtn).to.eql([mixin1, mixin2, mixin3, mixin4]);
   });
 
   it('should extract list arguments', function() {
-    React.mixins.add('1', mixin1);
-    React.mixins.add('2', mixin2);
-    React.mixins.add('3', mixin3);
-    React.mixins.add('4', mixin4);
-    var rtn = React.mixins.get('1', ['2', '3']);
+    ReactMixinManager.add('1', mixin1);
+    ReactMixinManager.add('2', mixin2);
+    ReactMixinManager.add('3', mixin3);
+    ReactMixinManager.add('4', mixin4);
+    var rtn = ReactMixinManager.get('1', ['2', '3']);
     expect(rtn).to.eql([mixin1, mixin2, mixin3]);
   });
 
   it('should use "exists" to tell if a mixin has already been registered', function() {
-    React.mixins.add('1', mixin1);
-    expect(!!React.mixins.exists('1')).to.eql(true);
-    expect(React.mixins.exists('2')).to.eql(false);
+    ReactMixinManager.add('1', mixin1);
+    expect(!!ReactMixinManager.exists('1')).to.eql(true);
+    expect(ReactMixinManager.exists('2')).to.eql(false);
   });
 
   it('should allow secondary dependencies (dependsOn)', function() {
     // secondary dependencies do not need the related mixins to be defined
-    React.mixins.inject('1', '2');
-    React.mixins.add('1', mixin1);
-    React.mixins.add('2', mixin2);
-    var rtn = React.mixins.get('1');
+    ReactMixinManager.inject('1', '2');
+    ReactMixinManager.add('1', mixin1);
+    ReactMixinManager.add('2', mixin2);
+    var rtn = ReactMixinManager.get('1');
     expect(rtn).to.eql([mixin2, mixin1]);
   });
 
   it('should support parameters in mixin references', function() {
-    React.mixins.add('p', mixinWithParams);
-    var rtn = React.mixins.get('p("foo")');
+    ReactMixinManager.add('p', mixinWithParams);
+    var rtn = ReactMixinManager.get('p("foo")');
     expect(rtn).to.eql([{
       param1: 'foo',
       param2: undefined
     }]);
 
     // multiple parameters should be supported as well - all will be converted to strings (and spaces will exist in the arguments)
-    rtn = React.mixins.get('p("foo","bar")');
+    rtn = ReactMixinManager.get('p("foo","bar")');
     expect(rtn).to.eql([{
       param1: 'foo',
       param2: 'bar'
@@ -138,9 +138,9 @@ describe('react-mixin-dependencies', function() {
   });
 
   it('should include dependencies with parameters references', function() {
-    React.mixins.add('1', mixin1);
-    React.mixins.add('p', mixinWithParams, '1');
-    var rtn = React.mixins.get('p("foo")');
+    ReactMixinManager.add('1', mixin1);
+    ReactMixinManager.add('p', mixinWithParams, '1');
+    var rtn = ReactMixinManager.get('p("foo")');
     expect(rtn).to.eql([mixin1, {
       param1: 'foo',
       param2: undefined
@@ -148,23 +148,23 @@ describe('react-mixin-dependencies', function() {
   });
 
   it('should support once initiated mixins', function() {
-    React.mixins.add({
+    ReactMixinManager.add({
       name: 'p',
       initiatedOnce: true
     }, initiatedOnceMixinWithParams);
-    var rtn = React.mixins.get('p("foo")', 'p("bar")');
+    var rtn = ReactMixinManager.get('p("foo")', 'p("bar")');
     expect(rtn).to.eql([{
       calls: [['foo'], ['bar']]
     }]);
   });
 
   it('should support dependencies for once initiated mixins', function() {
-    React.mixins.add('mixin1', mixin1);
-    React.mixins.add({
+    ReactMixinManager.add('mixin1', mixin1);
+    ReactMixinManager.add({
       name: 'p',
       initiatedOnce: true
     }, initiatedOnceMixinWithParams, 'mixin1');
-    var rtn = React.mixins.get('p("foo")', 'p("bar")');
+    var rtn = ReactMixinManager.get('p("foo")', 'p("bar")');
     expect(rtn).to.eql([mixin1, {
       calls: [['foo'], ['bar']]
     }]);
@@ -176,11 +176,11 @@ describe('react-mixin-dependencies', function() {
       var flattenParams = _.flatten(params);
       return mixinWithParams.apply(this, flattenParams);
     };
-    React.mixins.add({
+    ReactMixinManager.add({
       name: 'p',
       initiatedOnce: true
     }, wrappedMixinImpl);
-    var rtn = React.mixins.get('p("foo")', 'p("bar")');
+    var rtn = ReactMixinManager.get('p("foo")', 'p("bar")');
     expect(rtn).to.eql([{
       param1: 'foo',
       param2: 'bar'
@@ -195,13 +195,13 @@ describe('react-mixin-dependencies', function() {
         }
       };
     };
-    React.mixins.add({name: 'once', initiatedOnce: true}, initiatedOnce);
+    ReactMixinManager.add({name: 'once', initiatedOnce: true}, initiatedOnce);
     var depOn = {
       test: function() {}
     };
-    React.mixins.add('depOn', depOn, 'once');
+    ReactMixinManager.add('depOn', depOn, 'once');
 
-    var rtn = React.mixins.get(['depOn', 'once("foo")']);
+    var rtn = ReactMixinManager.get(['depOn', 'once("foo")']);
     expect(rtn.length).to.eql(2);
 
     var argsArr = rtn[0].argsArr();
@@ -209,13 +209,13 @@ describe('react-mixin-dependencies', function() {
   });
 
   it('should add "mixins" attribute as dependencies from a provided mixin', function() {
-    React.mixins.add('1', mixin1);
-    React.mixins.add('2', mixin2);
+    ReactMixinManager.add('1', mixin1);
+    ReactMixinManager.add('2', mixin2);
     var testMixin = {
       mixins: ['1'],
       foo: 'bar'
     };
-    var rtn = React.mixins.get('2', testMixin);
+    var rtn = ReactMixinManager.get('2', testMixin);
     expect(rtn.length).to.eql(3);
     expect(rtn[0]).to.eql(mixin2);
     expect(rtn[1]).to.eql(mixin1);
@@ -225,15 +225,15 @@ describe('react-mixin-dependencies', function() {
   });
 
   it('should replace a previous mixin', function() {
-    React.mixins.add('bar', mixin1);
-    React.mixins.add('bar', mixin2);
-    expect(React.mixins.get(['bar'])).to.eql([mixin2]);
+    ReactMixinManager.add('bar', mixin1);
+    ReactMixinManager.add('bar', mixin2);
+    expect(ReactMixinManager.get(['bar'])).to.eql([mixin2]);
   });
 
   describe('#deferUpdate', function() {
     var self;
     beforeEach(function() {
-      React.mixins.defaultDeferUpdateInterval = 100;
+      ReactMixinManager.defaultDeferUpdateInterval = 100;
       this.clock = sinon.useFakeTimers();
       self = {
         isMounted: function() { return true; },
@@ -249,8 +249,8 @@ describe('react-mixin-dependencies', function() {
       // placeholder to have something to register
     };
     it('should default to 100ms', function() {
-      React.mixins.add('deferTest', mixin, 'deferUpdate');
-      var deferMixin = React.mixins.get('deferTest')[0];
+      ReactMixinManager.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = ReactMixinManager.get('deferTest')[0];
       deferMixin.deferUpdate.call(self);
       this.clock.tick(99);
       expect(self.forceUpdate.callCount).to.eql(0);
@@ -259,8 +259,8 @@ describe('react-mixin-dependencies', function() {
       expect(self.state._deferUpdateTimer).to.eql(undefined);
     });
     it('should cancel if another force update occurs', function() {
-      React.mixins.add('deferTest', mixin, 'deferUpdate');
-      var deferMixin = React.mixins.get('deferTest')[0];
+      ReactMixinManager.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = ReactMixinManager.get('deferTest')[0];
       deferMixin.deferUpdate.call(self);
       deferMixin.componentDidUpdate.call(self);
       expect(self.state._deferUpdateTimer).to.eql(undefined);
@@ -268,15 +268,15 @@ describe('react-mixin-dependencies', function() {
       expect(self.forceUpdate.callCount).to.eql(0);
     });
     it('should prevent rendering if an update timer has been set', function() {
-      React.mixins.add('deferTest', mixin, 'deferUpdate');
-      var deferMixin = React.mixins.get('deferTest')[0];
+      ReactMixinManager.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = ReactMixinManager.get('deferTest')[0];
       deferMixin.deferUpdate.call(self);
       var rtn = deferMixin.shouldComponentUpdate.call(self);
       expect(rtn).to.eql(false);
     });
     it('should only render once if multiple deferUpdates are called', function() {
-      React.mixins.add('deferTest', mixin, 'deferUpdate');
-      var deferMixin = React.mixins.get('deferTest')[0];
+      ReactMixinManager.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = ReactMixinManager.get('deferTest')[0];
       deferMixin.deferUpdate.call(self);
       deferMixin.deferUpdate.call(self);
       this.clock.tick(99);
@@ -286,8 +286,8 @@ describe('react-mixin-dependencies', function() {
       expect(self.state._deferUpdateTimer).to.eql(undefined);
     });
     it('should update timer if a later deferUpdate is called', function() {
-      React.mixins.add('deferTest', mixin, 'deferUpdate');
-      var deferMixin = React.mixins.get('deferTest')[0];
+      ReactMixinManager.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = ReactMixinManager.get('deferTest')[0];
       deferMixin.deferUpdate.call(self);
       this.clock.tick(50);
       deferMixin.deferUpdate.call(self);
@@ -298,9 +298,9 @@ describe('react-mixin-dependencies', function() {
       expect(self.state._deferUpdateTimer).to.eql(undefined);
     });
     it('should execute directly if default interval is < 0', function() {
-      React.mixins.defaultDeferUpdateInterval = -1;
-      React.mixins.add('deferTest', mixin, 'deferUpdate');
-      var deferMixin = React.mixins.get('deferTest')[0];
+      ReactMixinManager.defaultDeferUpdateInterval = -1;
+      ReactMixinManager.add('deferTest', mixin, 'deferUpdate');
+      var deferMixin = ReactMixinManager.get('deferTest')[0];
       deferMixin.deferUpdate.call(self);
       expect(self.forceUpdate.callCount).to.eql(1);
     });
@@ -308,23 +308,23 @@ describe('react-mixin-dependencies', function() {
 
   describe('namespaces', function() {
     it('should match with namespace', function() {
-      React.mixins.add('foo.bar', mixin1);
-      expect(React.mixins.get(['foo.bar'])).to.eql([mixin1]);
+      ReactMixinManager.add('foo.bar', mixin1);
+      expect(ReactMixinManager.get(['foo.bar'])).to.eql([mixin1]);
     });
     it('should match without namespace', function() {
-      React.mixins.add('foo.bar', mixin1);
-      expect(React.mixins.get(['bar'])).to.eql([mixin1]);
+      ReactMixinManager.add('foo.bar', mixin1);
+      expect(ReactMixinManager.get(['bar'])).to.eql([mixin1]);
     });
     it('should alow dots after namespace', function() {
-      React.mixins.add('foo.bar.baz', mixin1);
-      expect(React.mixins.get(['foo.bar.baz'])).to.eql([mixin1]);
-      expect(React.mixins.get(['bar.baz'])).to.eql([mixin1]);
+      ReactMixinManager.add('foo.bar.baz', mixin1);
+      expect(ReactMixinManager.get(['foo.bar.baz'])).to.eql([mixin1]);
+      expect(ReactMixinManager.get(['bar.baz'])).to.eql([mixin1]);
     });
     it('should not replace existing mixins w/o namespace', function() {
-      React.mixins.add('bar', mixin1);
-      React.mixins.add('foo.bar', mixin2);
-      expect(React.mixins.get(['bar'])).to.eql([mixin1]);
-      expect(React.mixins.get(['foo.bar'])).to.eql([mixin2]);
+      ReactMixinManager.add('bar', mixin1);
+      ReactMixinManager.add('foo.bar', mixin2);
+      expect(ReactMixinManager.get(['bar'])).to.eql([mixin1]);
+      expect(ReactMixinManager.get(['foo.bar'])).to.eql([mixin2]);
     });
   });
 });

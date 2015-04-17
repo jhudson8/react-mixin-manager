@@ -18,14 +18,14 @@ Include a mixin registered with react-mixin-manager to your component class
 Register a mixin as an alias
 
 ```
-    React.mixins.add('mixinAlias', myMixin);
+    require('react-mixin-manager).add('mixinAlias', myMixin);
 ```
 
 Register a mixin dependency
 
 ```
     // "dependantMixin" will be included whenever "mixinAlias" is included on a component
-    React.mixins.add('mixinAlias', myMixin, 'dependantMixin');
+    require('react-mixin-manager).add('mixinAlias', myMixin, 'dependantMixin');
 ```
 
 Include a mixin with parameters to your component (see Advanced Features for more details)
@@ -41,6 +41,7 @@ Installation
 --------------
 Browser:
 
+The react-mixin-manager object can be referenced ```ReactMixinManager```
 ```
     <script src=".../react[-min].js"></script>
     <script src=".../react-mixin-manager[-min].js"></script>
@@ -48,16 +49,17 @@ Browser:
 
 CommonJS
 
-```
-    require('react-mixin-manager')(require('react'));
+No initialization necessary
+```javascript
+    var ReactMixinManager = require('react-mixin-manager');
 ```
 
 AMD
 
+No initialization necessary
 ```javascript
-    require(
-      ['react', react-mixin-manager'], function(React, reactMixinManager) {
-      reactMixinManager(React); 
+    require(['react-mixin-manager'], function(ReactMixinManager) {
+      ...
     });
 ```
 
@@ -71,7 +73,7 @@ add "react-mixin-manager" keyword to your project to be included in this list
 
 API
 ------------
-### React.mixins
+### react-mixin-manager
 
 #### add (mixinName, mixin[, dependsOn, dependsOn, ...]) or (options, mixin[, dependsOn, dependsOn, ...])
 * ***mixinName***: (string) the alias to be used when including the mixin for a React component
@@ -85,8 +87,8 @@ Register the mixin to be referenced as the alias `mixinName` with any additional
 If the name contains a dot "." the prefix is assumed to be the namespace.  A mixin can be retrieved by either using the fully qualified name or the suffix.  The first mixin to be added with any suffix will be returned if there are 2 different namespaces with the same suffix.
 
 ```javascript
-    React.mixins.add('namespace-a.foo', aFoo);
-    React.mixins.add('namespace-b.foo', bFoo);
+    require('react-mixin-manager).add('namespace-a.foo', aFoo);
+    require('react-mixin-manager).add('namespace-b.foo', bFoo);
     mixins: ['foo'] // will result to [aFoo]
     mixins: ['namespace-a.foo'] // will result to [aFoo]
     mixins: ['namespace-b.foo'] // will result to [bFoo]
@@ -98,7 +100,7 @@ If the name contains a dot "." the prefix is assumed to be the namespace.  A mix
 
 ```javascript
     // register myMixinImpl as the alias "myMixin"
-    React.mixins.add('myMixin', myMixinImpl);
+    require('react-mixin-manager).add('myMixin', myMixinImpl);
     ...
     React.createClass({
       mixins: ['myMixin', anyOtherPlainOldMixin]
@@ -110,9 +112,9 @@ If the name contains a dot "." the prefix is assumed to be the namespace.  A mix
 
 ```javascript
     // register mixin1Impl as the alias "mixin1"
-    React.mixins.add('mixin1', mixin1Impl);
+    require('react-mixin-manager).add('mixin1', mixin1Impl);
     // register mixin2Impl as the alias "mixin2" with a dependency on the mixin defined by the alias "mixin1"
-    React.mixins.add('mixin2', mixin2Impl, 'mixin1');
+    require('react-mixin-manager).add('mixin2', mixin2Impl, 'mixin1');
     ...
     React.createClass({
       // mixin1Impl, mixin2Impl, anyOtherPlainOldMixin will be included (a named mixin will never be included multiple times)
@@ -133,10 +135,10 @@ Add additional dependencies to a mixin that has already been registered.  This i
 
 ```javascript
     // register myMixinImpl as the alias "myMixin"
-    React.mixins.add('myMixin', myMixinImpl);
+    require('react-mixin-manager).add('myMixin', myMixinImpl);
 
     // "tpMixin" is a 3rd party mixin that has already been registered which has no dependencies
-    React.mixins.inject('tpMixin', 'myMixin');
+    require('react-mixin-manager).inject('tpMixin', 'myMixin');
     ...
     React.createClass({
       // "tpMixin" and "myMixin" will be included
@@ -153,13 +155,13 @@ Define an alias which can be used to group multiple named mixins together so tha
 
 ```javascript
     // register mixin1Impl as the alias "mixin1"
-    React.mixins.add('mixin1', mixin1Impl);
+    require('react-mixin-manager).add('mixin1', mixin1Impl);
 
     // register mixin2Impl as the alias "mixin2"
-    React.mixins.add('mixin1', mixin1Impl);
+    require('react-mixin-manager).add('mixin1', mixin1Impl);
 
     // group these mixins into a single alias "all" that can be referenced
-    React.mixins.alias('all', 'mixin1', 'mixin2');
+    require('react-mixin-manager).alias('all', 'mixin1', 'mixin2');
 
     ...
     React.createClass({
@@ -178,7 +180,7 @@ This is used, for example, in [react-events](https://github.com/jhudson8/react-e
 
 ```javascript
     getInitialState: function() {
-      React.mixins.setState({foo: 'bar'}, this);
+      require('react-mixin-manager).setState({foo: 'bar'}, this);
     }
 ```
 
@@ -187,11 +189,11 @@ This is used, for example, in [react-events](https://github.com/jhudson8/react-e
 * ***key***: (string) the key referencing the state attribute to be retrieved
 * ***context***: (ReactComponent) "this" when calling this method from a ReactComponent
 
-Return the state attribute which was set using ```React.mixins.setState```.
+Return the state attribute which was set using ```require('react-mixin-manager).setState```.
 
 ```javascript
     getInitialState: function() {
-      var foo = React.mixins.getState('foo', this);
+      var foo = require('react-mixin-manager).getState('foo', this);
     }
 ```
 
@@ -205,7 +207,7 @@ Mixin used to make available a single function ```deferUpdate``` to your compone
 
 This is similar to [forceUpdate](http://facebook.github.io/react/docs/component-api.html) but moved to the next event loop (or after a set interval).  Any calls to deferUpdate before the callback fires will execute only a single [forceUpdate](http://facebook.github.io/react/docs/component-api.html) call.  This can be beneficial for mixins that listen to certain events that might cause a render multiple times unnecessarily.  [react-backbone](https://github.com/jhudson8/react-backbone), for example, uses this feature heavily.
 
-```React.mixins.defaultDeferUpdateInterval``` can be used to set the interval in milis between the ```deferUpdate``` call and the actual ```forceUpdate``` call.  A value < 0 will not defer the ```forceUdpate``` call (beneficial only to change behavior of 3rd party mixins that depend on this functionality).
+```require('react-mixin-manager).defaultDeferUpdateInterval``` can be used to set the interval in milis between the ```deferUpdate``` call and the actual ```forceUpdate``` call.  A value < 0 will not defer the ```forceUdpate``` call (beneficial only to change behavior of 3rd party mixins that depend on this functionality).
 
 
 ```javascript
@@ -260,7 +262,7 @@ You can still define dependencies when referring to object mixins by using the `
 If the mixin that is registered is a function, the result of that function will be used as the actual mixin provided to the React component.  This can be useful if runtime conditions need to be evaluated to determine what should be exposed to the component.
 
 ```javascript
-    React.mixins.add('myMixin', function() {
+    require('react-mixin-manager).add('myMixin', function() {
       if (window.something) {
         return mixin1;
       } else {
@@ -282,7 +284,7 @@ In this example, when *myComponent* is declared (not instantiated), based on the
 It is occasionally useful to add dynamic behavior to the mixin that is not based on some property set by the parent but rather a property that is internally defined by the component being instantiated.  This can be done by using *Dynamic Mixins* (see above).  When a function is used to return the mixin, any parameters supplied when referencing the mixin will supplied as arguments.
 
 ```javascript
-    React.mixins.add('myMixin', function(something) {
+    require('react-mixin-manager).add('myMixin', function(something) {
       if (something === 'foo') {
         return mixin1;
       } else {
@@ -306,10 +308,10 @@ The ***initiatedOnce*** option can be used when registering a mixin to ensure th
 
 ```javascript
     // register initiatedOnceMixinImpl as the alias "initiatedOnceMixin" and pass initiatedOnce as true
-    React.mixins.add({name: 'initiatedOnceMixin', initiatedOnce: true}, initiatedOnceMixinImpl);
+    require('react-mixin-manager).add({name: 'initiatedOnceMixin', initiatedOnce: true}, initiatedOnceMixinImpl);
 
     // register another mixin which has "InitiatedOnceMixin" with some parameters as dependency
-    React.mixins.add('myMixin', myMixinImpl, 'initiatedOnceMixin("foo", "fee")');
+    require('react-mixin-manager).add('myMixin', myMixinImpl, 'initiatedOnceMixin("foo", "fee")');
     ...
     React.createClass({
       mixins: ['initiatedOnceMixin("bar")', 'myMixin']
