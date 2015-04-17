@@ -220,6 +220,7 @@
         if (match &&  !_mixins[match[1]]) {
             _add(match[1]);
         }
+        return mixin;
     }
 
     function GROUP() {
@@ -297,11 +298,11 @@
         },
 
         alias: function(name) {
-            addMixin(name, GROUP, Array.prototype.slice.call(arguments, 1), false);
+            return addMixin(name, GROUP, Array.prototype.slice.call(arguments, 1), false);
         },
 
         add: function( /* options, mixin */ ) {
-            addMixin.apply(this, mixinParams(arguments));
+            return addMixin.apply(this, mixinParams(arguments));
         },
 
         exists: function(name) {
