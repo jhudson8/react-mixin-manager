@@ -37,6 +37,13 @@ global.window = document.parentWindow;
 
 var ReactMixinManager = require('../index');
 
+describe('applied mixins', function() {
+  it('should set the mixins on ReactMixinManager.mixins', function() {
+    var mixins = ReactMixinManager.get(['state']);
+    expect(ReactMixinManager.mixins.state).to.eql(mixins[0]);
+  });
+});
+
 describe('#getState / #setState', function() {
   it('should get and state before component is initialized', function(done) {
     var childMixin = {

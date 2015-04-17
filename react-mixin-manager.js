@@ -330,7 +330,7 @@
          */
         rtn.defaultDeferUpdateInterval = 0;
         var fakeMaxInterval = 999999999;
-        rtn.mixins.deferUpdate = rtn.add({name: 'deferUpdate', initiatedOnce: true}, function(args) {
+        rtn.add({name: 'deferUpdate', initiatedOnce: true}, function(args) {
             var lowestInterval = fakeMaxInterval;
             for (var i=0; i<args.length; i++) {
                 if (args[i].length > 0) {
