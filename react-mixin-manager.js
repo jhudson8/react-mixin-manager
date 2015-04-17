@@ -251,6 +251,8 @@
     }
 
     var rtn = {
+        mixins: {},
+
         /**
          * return the normalized mixins.  there can be N arguments with each argument being
          * - an array: will be flattened out to the parent list of mixins
@@ -328,7 +330,7 @@
          */
         rtn.defaultDeferUpdateInterval = 0;
         var fakeMaxInterval = 999999999;
-        rtn.add({name: 'deferUpdate', initiatedOnce: true}, function(args) {
+        rtn.mixins.deferUpdate = rtn.add({name: 'deferUpdate', initiatedOnce: true}, function(args) {
             var lowestInterval = fakeMaxInterval;
             for (var i=0; i<args.length; i++) {
                 if (args[i].length > 0) {
@@ -385,7 +387,7 @@
          * very simple mixin that ensures that the component state is an object.  This is useful if you
          * know a component will be using state but won't be initialized with a state to prevent a null check on render
          */
-        rtn.add('state', {
+        rtn.mixins.state = rtn.add('state', {
             getInitialState: function() {
                 return {};
             },
