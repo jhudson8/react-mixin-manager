@@ -15,6 +15,9 @@
   "scripts": {
     "test": "mocha"
   },
+  "peerDependencies": {
+    "react": "*"
+  },
   "devDependencies": {
     "chai": "~1.10",
     "jsdom": "~1.3",
