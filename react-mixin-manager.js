@@ -31,8 +31,7 @@
         });
     } else if (typeof exports !== 'undefined' && typeof require !== 'undefined') {
         // CommonJS
-        var React = require('react');
-        module.exports = main(React);
+        module.exports = main(require('react'));
     } else {
         // browser
         ReactMixinManager = main(React);
