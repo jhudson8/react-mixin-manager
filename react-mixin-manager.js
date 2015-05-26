@@ -40,9 +40,17 @@
 
     var _dependsOn, _dependsInjected, _mixins, _initiatedOnce;
 
-    function setState(state, context) {
+    function setState(state, context, force) {
         if (context.isMounted()) {
-            context.setState(state);
+            if (force === undefined || force) {
+                context.setState(state);
+            } else {
+                for (var name in state) {
+                    if (state.hasOwnProperty(name)) {
+                        context.state[name] = state[name];
+                    }
+                }
+            }
         } else if (context.state) {
             for (var name in state) {
                 if (state.hasOwnProperty(name)) {
