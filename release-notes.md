@@ -2,7 +2,13 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v1.0.1...master)
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v1.0.2...master)
+
+## v1.0.2 - May 26th, 2015
+- add force flag as optional third parameter to set the state values without forcing an update (no usage of setState) - 6ba8f90
+
+
+[Commits](https://github.com/jhudson8/react-mixin-manager/compare/v1.0.1...v1.0.2)
 
 ## v1.0.1 - May 9th, 2015
 - bug fix: in-browser source include loading - c32c0a5
